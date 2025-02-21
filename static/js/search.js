@@ -2153,7 +2153,7 @@ var htmldom = (function () {
 			if (index != -1) {
 				var th = document.createElement("th");
 				if (f_obj["column_width"] != undefined) {
-					th.width = f_obj["column_width"];
+					th.style.width = f_obj["column_width"];
 				}
 				th.innerHTML = f_obj["value"];
 				if (f_obj["title"] != undefined) {
@@ -2509,16 +2509,22 @@ var htmldom = (function () {
 
 	/*creates the search main-entry (a big searching-box)*/
 	function main_entry(search_base_path){
-		var str_html = "<div class='search-entry'>"+
-											"Search inside the <a href='/'><span class='theme-color'>Open</span><span class='oc-blue'>Citations</span></a> corpus"+
-											"<form class='input-group search-box' action='"+search_base_path+"' method='get'>"+
-											"<input type='text' class='form-control theme-color' placeholder='Search...' name='text'>"+
-												"<div class='input-group-btn'>"+
-												"<button class='btn btn-default theme-color' type='submit'><i class='bi bi-search'></i></button>"+
-												"</div>"+
-											"</form>"+
-										 "</div>";
-
+		var str_html = `
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="search-entry text-center">
+                        <h2>Search inside the <a href='/'><span class='theme-color'>Open</span><span class='oc-blue'>Citations</span></a> corpus</h2>
+                        <form class="input-group search-box" action="${search_base_path}" method="get">
+                            <input type="text" class="form-control theme-color" placeholder="Search..." name="text">
+                            <div class="input-group-append">
+                                <button class="btn btn-default theme-color" type="submit"><i class="bi bi-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>`;
 		header_container.innerHTML = str_html;
 		return str_html;
 	}
@@ -2564,27 +2570,39 @@ var htmldom = (function () {
 		var str_options = _build_rules_options(arr_rules, adv_cat_selected);
 
 		var str_html =
-						"<p>"+
-							"<div class='adv-search'>"+
-								"<div class='adv-search-nav'>"+
-									"<ul class='nav pages-nav'>"+
-									str_lis+
-									"</ul>"+
-								"</div>"+
-								"<form action='"+search_base_path+"' method='get'>"+
-									"<div class='adv-search-body'>"+
-										_build_rule_entry(0, arr_rules, adv_cat_selected) +
-										"<p><table id='adv_rules_tab' class='adv-rules-tab'></table></p>"+
-									"</div>"+
-									"<div class='adv-search-footer'>"+
-										"<div class='input-group-btn'>"+
-											"<button class='btn btn-default theme-color' id='advsearch_btn'> <span class='search-btn-text'>"+adv_btn_title+"</span><i class='bi bi-search large-icon'></i></button>"+
-											"<button type='button' class='btn btn-default theme-color' id='add_rule_btn'> <span class='add-btn-text'> Add Rule </span><i class='bi bi-plus normal-icon'></i></button>"+
-										"</div>"+
-									"</div>"+
-								"</form>"+
-							"</div>"+
-						"</p>";
+        `<div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="adv-search">
+                        <div class="adv-search-nav">
+                            <ul class="nav nav-pills">
+                                ${str_lis}
+                            </ul>
+                        </div>
+                        <form action="${search_base_path}" method="get">
+                            <div class="adv-search-body">
+                                ${_build_rule_entry(0, arr_rules, adv_cat_selected)}
+                                <div class="table-responsive">
+                                    <table id="adv_rules_tab" class="table adv-rules-tab"></table>
+                                </div>
+                            </div>
+                            <div class="adv-search-footer">
+                                <div class="btn-group">
+                                    <button class="btn btn-primary" id="advsearch_btn">
+                                        <span class="search-btn-text">${adv_btn_title}</span>
+                                        <i class="bi bi-search large-icon"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" id="add_rule_btn">
+                                        <span class="add-btn-text">Add Rule</span>
+                                        <i class="bi bi-plus normal-icon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>`;
 		extra_container.innerHTML = str_html;
 		document.getElementById("add_rule_btn").onclick = function(){htmldom.add_adv_rule(arr_rules, adv_cat_selected)};
 		return str_html;
@@ -2605,8 +2623,8 @@ var htmldom = (function () {
 					is_active = "active";
 				}
 
-				var str_href = "javascript:search.switch_adv_category('"+arr_categories[i].name+"')";
-				str_lis = str_lis + "<li class='"+is_active+"'><a href="+str_href+">"+arr_categories[i].label+"</a></li>"
+				var str_href = `javascript:search.switch_adv_category('${arr_categories[i].name}')`;
+				str_lis = `${str_lis}<li class="nav-item ${is_active}"><a class="nav-link" href="${str_href}">${arr_categories[i].label}</a></li>`;
 			}
 			return str_lis;
 		}
@@ -2661,13 +2679,12 @@ var htmldom = (function () {
 	 /*creates the container of the buttons: All, Show-only, Exclude */
 	function filter_btns(){
 		if (filter_btns_container != null) {
-			var str_html =
-				"<div class='btn-group filters-btns' id='filters_btns' active='false' role='group'>"+
-				"<button type='button' class='btn btn-primary' id='all' onclick='search.show_all();'>All</button>"+
-				"<button type='button' class='btn btn-primary' id='show-only' onclick='search.show_or_exclude("+true+");' disabled>Show only</button>"+
-				"<button type='button' class='btn btn-primary' id='exclude' onclick='search.show_or_exclude("+false+");' disabled>Exclude</button>"+
-				"</div>"
-				;
+			var str_html = `
+            <div class="btn-group filters-btns" id="filters_btns" role="group">
+                <button type="button" class="btn btn-primary" id="all" onclick="search.show_all();">All</button>
+                <button type="button" class="btn btn-primary" id="show-only" onclick="search.show_or_exclude(true);" disabled>Show only</button>
+                <button type="button" class="btn btn-primary" id="exclude" onclick="search.show_or_exclude(false);" disabled>Exclude</button>
+            </div>`;
 			filter_btns_container.innerHTML = str_html;
 			return str_html;
 		}else {
@@ -2730,18 +2747,17 @@ var htmldom = (function () {
 	/*creates the results limit filter*/
 	function limit_filter(init_val, tot_res, slider_min, slider_max){
 		if (limitres_container != null) {
-			str_html =
-			"<div class='limit-results'>"+
-			"Limit to <myrange class='limit-results-value' id='lbl_range' for='final_text'> "+String(init_val)+"</myrange>/"+String(tot_res)+" results"+
-			"</div>"+
-			"<div class='slider-container'>"+
-			"<input type='range' min="+String(slider_min)+" max="+String(slider_max)+" value="+String(init_val)+" class='slider' oninput='lbl_range.innerHTML=this.value; search.update_res_limit(this.value);' id='myRange'>"+
-			"</div>"+
-			"<div class='slider-footer'>"+
-			"<div class='left'>&#60; Fewer</div><div class='right'>More &#62;</div>"+
-			"</div>";
-
-			//str_html = "<div class='tot-results'><span id='lbl_range'> "+String(init_val)+"</span> resources found"+"</div>";
+			var str_html = `
+            <div class="limit-results">
+                Limit to <span class="limit-results-value" id="lbl_range">${init_val}</span>/${tot_res} results
+            </div>
+            <div class="slider-container">
+                <input type="range" min="${slider_min}" max="${slider_max}" value="${init_val}" class="slider" oninput="lbl_range.innerHTML=this.value; search.update_res_limit(this.value);" id="myRange">
+            </div>
+            <div class="slider-footer d-flex justify-content-between">
+                <div class="left">&#60; Fewer</div>
+                <div class="right">More &#62;</div>
+            </div>`;
 			limitres_container.innerHTML = str_html;
 			return str_html;
 		}else {
@@ -2905,7 +2921,7 @@ var htmldom = (function () {
 					var new_footer_tab = document.createElement("table");
 
 					new_tab_res.id = "tab_res";
-					new_tab_res.className = "table results-tab";
+					new_tab_res.className = "table table-striped table-responsive results-tab";
 
 					//create table header
 					var col = table_conf.view.data["head"]["vars"];

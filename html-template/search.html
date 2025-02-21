@@ -32,6 +32,12 @@ $def with (active, sp_title, sparql_endpoint, query_string, current_subdomain, r
                  data-type="advanced" 
                  data-view="rows_per_page export_results sort_results" 
                  data-filter="limit_results filter_fields">
+                <div id="search_extra" class="search-extra"></div>
+                <div id="search_header" class="search-header"></div>
+                <div id="search_body" class="search-body">
+                    <div id="search_filters" class="search-filters"></div>
+                    <div id="search_results" class="search-results"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -46,6 +52,14 @@ $:render.common.footer()
    <script>
      search.do_sparql_query("$query_string");
    </script>
+   <script>
+    // Esegui la ricerca se c'è una query string
+    var queryString = "$query_string";
+    if (queryString) {
+        search.do_sparql_query(queryString);
+    }
+</script>
+</body>
 </body>
 
 </html>

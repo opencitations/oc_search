@@ -47,6 +47,7 @@ active = {
 urls = (
     "/", "Main",
     "/sparql/(.*)", "SparqlEndpoint",
+    '/search', 'Search',
     '/favicon.ico', 'Favicon'
 )
 
@@ -207,29 +208,18 @@ class SparqlEndpoint(Sparql):
                        "sparql endpoint", "/sparql")
 
 class Search:
-    def __init__(self, render_page):
-        self.render_page = render_page
-
     def GET(self):
         web_logger.mes()
-        query_string = web.ctx.env.get("QUERY_STRING")
-        return self.render_page(pages, active["search"], query_string)
-
-
-class SearchIndex(Search):
-    def __init__(self):
-        Search.__init__(self, render.search_index)
-
-
-class SearchOC(Search):
-    def __init__(self):
-        Search.__init__(self, render.search)
-
-
-class SearchCCC(Search):
-    def __init__(self):
-        Search.__init__(self, render.search_ccc)
-
+        current_subdomain = web.ctx.host.split('.')[0].lower()
+        query = web.input(text="", rule="citingdoi")  # rule default a citingdoi
+        return render.search(
+            active="", 
+            sp_title="", 
+            sparql_endpoint="", 
+            query_string=f"text={query.text}&rule={query.rule}", 
+            current_subdomain=current_subdomain, 
+            render=render
+        )
 
 # Run the application
 if __name__ == "__main__":
