@@ -1,0 +1,51 @@
+$def with (active, sp_title, sparql_endpoint, query_string, current_subdomain, render)
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenCitations - Search</title>
+  <!-- Bootstrap CSS -->
+  <link href="/static/bootstrap-533/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Custom styles for this template -->
+  <link href="/static/css/cover.css" rel="stylesheet" />
+  <link href="/static/css/search.css" rel="stylesheet" />
+  <!-- Custom HEADER CSS -->
+  <link rel="stylesheet" href="/static/css/custom.css" class="css" />
+</head>
+
+<body>
+
+  $:render.common.header(sp_title, current_subdomain)
+
+  <main class="container-fluid py-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center text-start">
+                <h3 class="mb-4">
+                    <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> 
+                    Corpus Search Interface
+                </h3>
+            </div>
+            <div class="cover __oscar__" 
+                 data-type="advanced" 
+                 data-view="rows_per_page export_results sort_results" 
+                 data-filter="limit_results filter_fields">
+            </div>
+        </div>
+    </div>
+</main>
+$:render.common.footer()
+  <!-- Bootstrap JS -->
+  <script src="/static/bootstrap-533/js/bootstrap.bundle.min.js"></script>
+   <!-- SEARCH GUI -->
+   <!-- <script type="text/javascript" src="/staticsearch-conf.jsjson"></script> -->
+   <script type="text/javascript" src="/static/js/search-conf-index-v2.js"></script>
+   <script type="text/javascript" src="/static/js/search.js"></script>
+   <script>
+     search.do_sparql_query("$query_string");
+   </script>
+</body>
+
+</html>
