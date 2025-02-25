@@ -46,7 +46,8 @@ active = {
 # URL Mapping
 urls = (
     "/", "Main",
-    "/sparql/(.*)", "SparqlEndpoint",
+    "/sparql/index", "SparqlIndex",  # Add specific endpoint routes
+    "/sparql/meta", "SparqlMeta",
     '/search', 'Search',
     '/favicon.ico', 'Favicon'
 )
@@ -134,23 +135,46 @@ class Sparql:
         accept = web.ctx.env.get('HTTP_ACCEPT')
         if accept is None or accept == "*/*" or accept == "":
             accept = "application/sparql-results+xml"
-        if is_post:
-            req = requests.post(self.sparql_endpoint, data=data,
-                              headers={'content-type': content_type, "accept": accept})
-        else:
-            req = requests.get("%s?%s" % (self.sparql_endpoint, data),
-                             headers={'content-type': content_type, "accept": accept})
-
-        if req.status_code == 200:
-            web.header('Access-Control-Allow-Origin', '*')
-            web.header('Access-Control-Allow-Credentials', 'true')
-            web.header('Content-Type', req.headers["content-type"])
-            web_logger.mes()
-            req.encoding = "utf-8"
-            return req.text
-        else:
+        
+        # Add debug logging
+        print(f"Contacting endpoint: {self.sparql_endpoint}")
+        print(f"Request type: {'POST' if is_post else 'GET'}")
+        print(f"Headers: Content-Type={content_type}, Accept={accept}")
+        
+        try:
+            if is_post:
+                req = requests.post(self.sparql_endpoint, 
+                                  data=data,
+                                  headers={'content-type': content_type, 
+                                         'accept': accept})
+            else:
+                req = requests.get(f"{self.sparql_endpoint}?{data}",
+                                 headers={'content-type': content_type, 
+                                        'accept': accept})
+            
+            print(f"Response status: {req.status_code}")
+            
+            if req.status_code == 200:
+                web.header('Access-Control-Allow-Origin', '*')
+                web.header('Access-Control-Allow-Credentials', 'true')
+                web.header('Content-Type', req.headers["content-type"])
+                web_logger.mes()
+                req.encoding = "utf-8"
+                return req.text
+            else:
+                print(f"Error response: {req.text}")
+                raise web.HTTPError(
+                    f"{req.status_code} ",
+                    {"Content-Type": req.headers["content-type"]},
+                    req.text
+                )
+        except requests.exceptions.RequestException as e:
+            print(f"Request error: {str(e)}")
             raise web.HTTPError(
-                str(req.status_code)+" ", {"Content-Type": req.headers["content-type"]}, req.text)
+                "503 ",
+                {"Content-Type": "text/plain"},
+                f"Error contacting SPARQL endpoint: {str(e)}"
+            )
 
     def __is_update_query(self, query):
         query = re.sub(r'^\s*#.*$', '', query, flags=re.MULTILINE)
@@ -206,6 +230,20 @@ class SparqlEndpoint(Sparql):
     def __init__(self,value):
         Sparql.__init__(self, value,
                        "sparql endpoint", "/sparql")
+
+class SparqlIndex(Sparql):
+    def __init__(self):
+        Sparql.__init__(self, 
+                       search_config["sparql_endpoint"]["index"],
+                       "sparql index", 
+                       "/sparql/index")
+
+class SparqlMeta(Sparql):
+    def __init__(self):
+        Sparql.__init__(self, 
+                       search_config["sparql_endpoint"]["meta"],
+                       "sparql meta", 
+                       "/sparql/meta")
 
 class Search:
     def GET(self):

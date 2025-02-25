@@ -1,5 +1,5 @@
 var search_conf = {
-"sparql_endpoint": "/sparql/index",
+"sparql_endpoint": "https://search.opencitations.net/sparql/index",
 "prefixes": [
     {"prefix":"cito","iri":"http://purl.org/spar/cito/"},
     {"prefix":"literal","iri":"http://www.essepuntato.it/2010/06/literalreification/"},
@@ -21,7 +21,7 @@ var search_conf = {
       "regex":"(.+)",
       "query": [`
             {
-              SERVICE <https://test.opencitations.net/meta/sparql> {
+              SERVICE <https://search.opencitations.net/sparql/meta> {
                 ?citing datacite:hasIdentifier ?identifier .
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
               }
@@ -41,7 +41,7 @@ var search_conf = {
       "regex":"(.+)",
       "query": [`
             {
-              SERVICE <https://test.opencitations.net/meta/sparql> {
+              SERVICE <https://search.opencitations.net/sparql/meta> {
                 ?cited datacite:hasIdentifier ?identifier .
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
               }
