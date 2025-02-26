@@ -2130,7 +2130,7 @@ var util = (function () {
 
 var htmldom = (function () {
 
-	var input_box_container = document.getElementsByClassName("form-control oc-purple");
+	var input_box_container = document.getElementsByClassName("form-control theme-color");
 	var results_container = document.getElementById("search_results");
 	var header_container = document.getElementById("search_header");
 	var sort_container = document.getElementById("sort_results");
@@ -2266,51 +2266,77 @@ var htmldom = (function () {
 	/*creates the navigation buttons and index of the results table*/
 	function _res_table_pages_nav(arr_values, mypage, tot_pages, tot_res, pages_lim){
 
-		var str_html = _pages_nav(arr_values, mypage + 1, tot_pages);
-		var new_btn = document.createElement("a");
-		//Prev button
+		// Create a base pagination with Bootstrap 5.3 classes
+		var paginationHtml = _pages_nav(arr_values, mypage + 1, tot_pages);
+		
+		// Create the prev/next buttons in the Bootstrap 5.3 way
+		var prevNextPagination = document.createElement("nav");
+		prevNextPagination.setAttribute("aria-label", "Page navigation");
+		
+		var paginationList = document.createElement("ul");
+		paginationList.className = "pagination";
+		
+		// Prev button
 		if(mypage > 0){
-			new_btn = __pages_prev_btn("javascript:search.prev_page()");
-			str_html = "<spanfooter>"+String(new_btn.outerHTML)+"</spanfooter>" + "<spanfooter>"+str_html+"</spanfooter>";
+			var prevItem = document.createElement("li");
+			prevItem.className = "page-item";
+			
+			var prevLink = document.createElement("a");
+			prevLink.className = "page-link";
+			prevLink.href = "javascript:search.prev_page()";
+			prevLink.innerHTML = "&laquo; Previous";
+			
+			prevItem.appendChild(prevLink);
+			paginationList.appendChild(prevItem);
 		}
-		//Next prev
+		
+		// Add the existing page numbers
+		var paginationInner = document.createElement("div");
+		paginationInner.innerHTML = paginationHtml;
+		var existingPageItems = paginationInner.firstChild.childNodes;
+		
+		for (var i = 0; i < existingPageItems.length; i++) {
+			paginationList.appendChild(existingPageItems[i].cloneNode(true));
+		}
+		
+		// Next button
 		var remaining_results = tot_res - ((mypage + 1) * pages_lim);
 		if(remaining_results > 0) {
-			new_btn = __pages_next_btn("javascript:search.next_page()");
-			str_html = "<spanfooter>"+str_html+"</spanfooter>" + "<spanfooter>"+String(new_btn.outerHTML)+"</spanfooter>";
+			var nextItem = document.createElement("li");
+			nextItem.className = "page-item";
+			
+			var nextLink = document.createElement("a");
+			nextLink.className = "page-link";
+			nextLink.href = "javascript:search.next_page()";
+			nextLink.innerHTML = "Next &raquo;";
+			
+			nextItem.appendChild(nextLink);
+			paginationList.appendChild(nextItem);
 		}
+		
+		prevNextPagination.appendChild(paginationList);
+		
 		var new_tr = document.createElement("tr");
-		new_tr.innerHTML = str_html;
+		var navCell = document.createElement("td");
+		navCell.colSpan = "100%";
+		navCell.className = "text-center";
+		navCell.appendChild(prevNextPagination);
+		new_tr.appendChild(navCell);
+		
 		return new_tr;
-
-		function __pages_prev_btn(href){
-			var new_btn = document.createElement("a");
-			new_btn.className = "tab-nav-btn prev";
-			new_btn.innerHTML = "&laquo; Previous";
-			new_btn.href = String(href);
-			return new_btn;
-		}
-
-		function __pages_next_btn(href){
-			var new_btn = document.createElement("a");
-			new_btn.className = "tab-nav-btn next";
-			new_btn.innerHTML = "Next &raquo;";
-			new_btn.href = String(href);
-			return new_btn;
-		}
 	}
 	/*create a checbox-field-value entry*/
 	function _checkbox_value(myfield, check_value){
 		var tr = document.createElement("tr");
 		var tabCell = document.createElement("td");
-		tabCell.innerHTML = "<div class='form-check'><label class='form-check-label'><input type='checkbox' field="+
+		tabCell.innerHTML = "<div class='form-check'><input class='form-check-input' type='checkbox' field="+
 												myfield.value+" value='"+String(check_value.value)+
 												"' onchange='search.checkbox_changed(this);'"+
 												//"checked='"+check_value.checked+"' "+
 												"id='"+String(myfield.value)+"-"+String(check_value.value)+"' "+
-												">"+
+												"><label class='form-check-label' for='"+String(myfield.value)+"-"+String(check_value.value)+"'>"+
 												check_value.label+" ("+check_value.sum+
-												")</label></div></div>";
+												")</label></div>";
 		tr.appendChild(tabCell);
 		return tr;
 	}
@@ -2373,12 +2399,12 @@ var htmldom = (function () {
 		var onchange_rule = "javascript:htmldom.adv_placeholder('"+param0+"','"+param1+"')";
 
 		var str_html= ""+
-			"<div class='adv-search-entry'>"+
-				"<div class='adv-search-input search-box'>"+
+			"<div class='adv-search-entry row g-3'>"+
+				"<div class='col-md-8'>"+
 						"<input entryid="+entryid+" id='adv_input_box_"+entryid+"' class='form-control theme-color' placeholder='"+first_placeholder+"' type='text' name='text'>"+
 				"</div>"+
-				"<div class='adv-search-selector'>"+
-					"<select type='text' name='rule' entryid="+entryid+" class='form-select custom' onchange="+onchange_rule+" id='rules_selector_"+entryid+"'>"+
+				"<div class='col-md-4'>"+
+					"<select type='text' name='rule' entryid="+entryid+" class='form-select' onchange="+onchange_rule+" id='rules_selector_"+entryid+"'>"+
 					str_options+
 					"</select>"+
 				"</div>"+
@@ -2419,17 +2445,20 @@ var htmldom = (function () {
 	/*creates the pages navigator*/
 	function _pages_nav(arr_values, mypage, tot_pages){
 		var str_html = "";
-		var str_start = "<ul class='nav pages-nav'>";
-		if (arr_values[0] > 1) { str_start = str_start + "...";}
+		var str_start = "<ul class='pagination'>";
+		if (arr_values[0] > 1) { str_start = str_start + "<li class='page-item disabled'><span class='page-link'>...</span></li>";}
 
 		var str_end = "</ul>";
-		if (arr_values[arr_values.length - 1] < tot_pages) { str_end = "..."+ str_end;}
+		if (arr_values[arr_values.length - 1] < tot_pages) { 
+			str_end = "<li class='page-item disabled'><span class='page-link'>...</span></li>"+ str_end;
+		}
+		
 		for (var i = arr_values.length - 1; i >= 0; i--) {
-			var elem_a = "<li><a class='pages-nav' href='javascript:search.select_page("+String(arr_values[i]-1)+");'>"+ String(arr_values[i])+" " +"</a></li>";
+			var elem_a = "<li class='page-item'><a class='page-link' href='javascript:search.select_page("+String(arr_values[i]-1)+");'>"+ String(arr_values[i])+"</a></li>";
 			if (arr_values[i] == mypage) {
-				elem_a = "<li class='active'><a class='pages-nav' href='javascript:search.select_page("+String(arr_values[i]-1)+");'>"+ String(arr_values[i])+" " +"</a></li>";
+				elem_a = "<li class='page-item active' aria-current='page'><a class='page-link' href='javascript:search.select_page("+String(arr_values[i]-1)+");'>"+ String(arr_values[i])+"</a></li>";
 			}
-			str_html = elem_a +" "+ str_html;
+			str_html = elem_a + str_html;
 		}
 		str_html = str_start + str_html + str_end;
 		return str_html;
@@ -2442,14 +2471,15 @@ var htmldom = (function () {
 			for (var i = 0; i < arr_options.length; i++) {
 				var str_option = "<option>"+String(arr_options[i])+"</option>";
 				if (arr_options[i] == page_limit) {
-					str_option = "<option selected='selected'>"+String(arr_options[i])+"</option>";
+					str_option = "<option selected>"+String(arr_options[i])+"</option>";
 				}
 				options_html= options_html + str_option;
 			}
 
 			var str_html =
-			"<div class='rows-per-page'> Number of rows per page: "+"<select class='form-select custom' onchange='search.update_page_limit(this.options[selectedIndex].text)'' id='sel1'> </div>"+
-				options_html+"</select>";
+			"<div class='rows-per-page'> Number of rows per page: "+
+            "<select class='form-select' onchange='search.update_page_limit(this.options[selectedIndex].text)' id='sel1'>"+
+				options_html+"</select></div>";
 
 			rowsxpage_container.innerHTML = str_html;
 			return str_html;
@@ -2483,7 +2513,7 @@ var htmldom = (function () {
 				if ((arr_options[i].value == def_value)
 					&& (arr_options[i].order == def_order)
 					&& (arr_options[i].type == def_type)) {
-						str_selected = "selected='selected'";
+						str_selected = "selected";
 						default_field = true;
 				}
 				var str_option = "<option "+str_selected+" value="+arr_options[i].value+" type="+arr_options[i].type+" order="+arr_options[i].order+">"+arr_options[i].text+"</option>";
@@ -2492,13 +2522,13 @@ var htmldom = (function () {
 			}
 
 			str_selected = "";
-			if (!default_field) {str_selected = "selected='selected'";}
+			if (!default_field) {str_selected = "selected";}
 			var str_option = "<option "+str_selected+" value='none' type='none' order='none'>"+"None"+"</option>";
 			options_html= options_html + str_option;
 
 			var str_html =
-				"<div class='sort-results'>Sort: <select class='form-select custom' onchange='search.check_sort_opt(this.options[selectedIndex])' id='sort_box_input'></div>"+
-				options_html+"</select>";
+				"<div class='sort-results'>Sort: <select class='form-select' onchange='search.check_sort_opt(this.options[selectedIndex])' id='sort_box_input'>"+
+				options_html+"</select></div>";
 
 			sort_container.innerHTML = str_html;
 			return str_html;
@@ -2517,9 +2547,7 @@ var htmldom = (function () {
                         <h2>Search inside the <a href='/'><span class='theme-color'>Open</span><span class='oc-blue'>Citations</span></a> corpus</h2>
                         <form class="input-group search-box" action="${search_base_path}" method="get">
                             <input type="text" class="form-control theme-color" placeholder="Search..." name="text">
-                            <div class="input-group-append">
-                                <button class="btn btn-default theme-color" type="submit"><i class="bi bi-search"></i></button>
-                            </div>
+                            <button class="btn btn-outline-secondary theme-color" type="submit"><i class="bi bi-search"></i></button>
                         </form>
                     </div>
                 </div>
@@ -2574,7 +2602,7 @@ var htmldom = (function () {
             <div class="row">
                 <div class="col-12">
                     <div class="adv-search">
-                        <div class="adv-search-nav">
+                        <div class="adv-search-nav mb-4">
                             <ul class="nav nav-pills">
                                 ${str_lis}
                             </ul>
@@ -2582,19 +2610,21 @@ var htmldom = (function () {
                         <form action="${search_base_path}" method="get">
                             <div class="adv-search-body">
                                 ${_build_rule_entry(0, arr_rules, adv_cat_selected)}
-                                <div class="table-responsive">
-                                    <table id="adv_rules_tab" class="table adv-rules-tab"></table>
+                                <div class="table-responsive mt-4">
+                                    <table id="adv_rules_tab" class="table adv-rules-tab">
+                                        <tbody></tbody>
+                                    </table>
                                 </div>
                             </div>
-                            <div class="adv-search-footer">
-                                <div class="btn-group">
-                                    <button class="btn btn-primary" id="advsearch_btn">
+                            <div class="adv-search-footer mt-4">
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-primary" id="advsearch_btn" type="submit">
+                                        <i class="bi bi-search me-2"></i>
                                         <span class="search-btn-text">${adv_btn_title}</span>
-                                        <i class="bi bi-search large-icon"></i>
                                     </button>
                                     <button type="button" class="btn btn-secondary" id="add_rule_btn">
+                                        <i class="bi bi-plus me-2"></i>
                                         <span class="add-btn-text">Add Rule</span>
-                                        <i class="bi bi-plus normal-icon"></i>
                                     </button>
                                 </div>
                             </div>
@@ -2624,7 +2654,7 @@ var htmldom = (function () {
 				}
 
 				var str_href = `javascript:search.switch_adv_category('${arr_categories[i].name}')`;
-				str_lis = `${str_lis}<li class="nav-item ${is_active}"><a class="nav-link" href="${str_href}">${arr_categories[i].label}</a></li>`;
+				str_lis = `${str_lis}<li class="nav-item"><a class="nav-link ${is_active}" href="${str_href}">${arr_categories[i].label}</a></li>`;
 			}
 			return str_lis;
 		}
@@ -2636,51 +2666,49 @@ var htmldom = (function () {
 
 		id_rows++;
 		var str_html = ''+
-			'<fieldset id="'+id_rows+'">'+
-				'<div class="adv btn-group" data-toggle="buttons">'+
-					'<label class="btn btn-secondary active">'+
-					'<input name="bc_'+id_rows+'" value="and" type="radio" entryid="'+id_rows+'" class="btn-check" checked>And'+
-					'</label>'+
-					'<label class="btn btn-secondary" value="or">'+
-					'<input name="bc_'+id_rows+'" value="or" type="radio" entryid="'+id_rows+'" class="btn-check">Or'+
-					'</label>'+
-					'<label class="btn btn-secondary" value="and_not">'+
-					'<input name="bc_'+id_rows+'" value="and_not" type="radio" entryid="'+id_rows+'" class="btn-check">And Not'+
-					'</label>'+
+			'<fieldset id="'+id_rows+'" class="p-3 mb-3 border rounded">'+
+				'<div class="d-flex align-items-center gap-3 mb-3">'+
+					'<div class="btn-group" role="group" aria-label="Logical connectors">'+
+						'<input type="radio" class="btn-check" name="bc_'+id_rows+'" id="and_'+id_rows+'" value="and" entryid="'+id_rows+'" checked autocomplete="off">'+
+						'<label class="btn btn-outline-secondary" for="and_'+id_rows+'">And</label>'+
+						
+						'<input type="radio" class="btn-check" name="bc_'+id_rows+'" id="or_'+id_rows+'" value="or" entryid="'+id_rows+'" autocomplete="off">'+
+						'<label class="btn btn-outline-secondary" for="or_'+id_rows+'">Or</label>'+
+						
+						'<input type="radio" class="btn-check" name="bc_'+id_rows+'" id="and_not_'+id_rows+'" value="and_not" entryid="'+id_rows+'" autocomplete="off">'+
+						'<label class="btn btn-outline-secondary" for="and_not_'+id_rows+'">And Not</label>'+
+					'</div>'+
+					'<div class="ms-auto">'+
+						'<button entryid="'+id_rows+'" class="btn btn-outline-danger" type="button" id="remove_rule_btn_'+id_rows+'" onclick="htmldom.remove_adv_rule('+id_rows+')"><i class="bi bi-dash me-1"></i>Remove</button>'+
+					'</div>'+
 				'</div>'+
-				'<div class="adv btn remove">'+
-				'<button entryid="'+id_rows+'" class="btn btn-default theme-color" id="remove_rule_btn" onclick="htmldom.remove_adv_rule('+id_rows+')" class="remove-rule-btn">Remove <i class="bi bi-dash normal-icon"></i> </button>'+
-				'</div>'+
+				_build_rule_entry(id_rows, arr_rules, adv_cat_selected)+
 			'</fieldset>'+
-			_build_rule_entry(id_rows, arr_rules, adv_cat_selected)+
 			'';
-		var tr_rule = document.createElement("tr");
-		var tabCell = document.createElement("td");
-		tabCell.innerHTML = str_html;
-		tr_rule.appendChild(tabCell);
 		var tr = table.insertRow(-1);
-		tr.innerHTML = tr_rule.outerHTML;
+		var tabCell = tr.insertCell(-1);
+		tabCell.innerHTML = str_html;
 		tr.ruleid = id_rows;
 	}
 
 	/*removes an advanced rule from the table*/
 	function remove_adv_rule(rule_id){
-			var table = document.getElementById("adv_rules_tab");
-			//remove my row and the next one
-			for (var i = 0; i < table.rows.length; i++) {
-				   //iterate through rows
-					 if (table.rows[i].ruleid == rule_id) {
-						 table.deleteRow(i);
-						 break;
-					 }
+		var table = document.getElementById("adv_rules_tab");
+		//remove my row and the next one
+		for (var i = 0; i < table.rows.length; i++) {
+			//iterate through rows
+			if (table.rows[i].ruleid == rule_id) {
+				table.deleteRow(i);
+				break;
 			}
-	 }
+		}
+	}
 
 	 /*creates the container of the buttons: All, Show-only, Exclude */
 	function filter_btns(){
 		if (filter_btns_container != null) {
 			var str_html = `
-            <div class="btn-group filters-btns" id="filters_btns" role="group">
+            <div class="btn-group filters-btns" id="filters_btns" role="group" aria-label="Filter buttons">
                 <button type="button" class="btn btn-primary" id="all" onclick="search.show_all();">All</button>
                 <button type="button" class="btn btn-primary" id="show-only" onclick="search.show_or_exclude(true);" disabled>Show only</button>
                 <button type="button" class="btn btn-primary" id="exclude" onclick="search.show_or_exclude(false);" disabled>Exclude</button>
@@ -2752,7 +2780,7 @@ var htmldom = (function () {
                 Limit to <span class="limit-results-value" id="lbl_range">${init_val}</span>/${tot_res} results
             </div>
             <div class="slider-container">
-                <input type="range" min="${slider_min}" max="${slider_max}" value="${init_val}" class="slider" oninput="lbl_range.innerHTML=this.value; search.update_res_limit(this.value);" id="myRange">
+                <input type="range" min="${slider_min}" max="${slider_max}" value="${init_val}" class="form-range" oninput="lbl_range.innerHTML=this.value; search.update_res_limit(this.value);" id="myRange">
             </div>
             <div class="slider-footer d-flex justify-content-between">
                 <div class="left">&#60; Fewer</div>
@@ -2886,7 +2914,7 @@ var htmldom = (function () {
 				var spinner_obj = progress_loader.spinner;
 				var str_html_spinner = "";
 				if ((spinner_obj != undefined) && (spinner_obj == true)){
-					str_html_spinner = "<p><div class='searchloader loader-spinner'></div></p>";
+					str_html_spinner = "<p><div class='searchloader spinner-border' role='status'><span class='visually-hidden'>Loading...</span></div></p>";
 				}
 
 				var str_html = str_html_title + str_html_subtitle + str_html_spinner + str_html_abort;
