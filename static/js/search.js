@@ -37,9 +37,9 @@ for (var i = 0; i < oscar_doms.length; i++) {
 	var str_html_inner = '<div id="search_extra" class="search-extra"></div>';
 	//OSCAR view section
 	if (oscar_doms[i]["data-view"].length != 0) {
-		str_html_inner = str_html_inner + '<div id="search_header" class="search-header row gy-3">';
+		str_html_inner = str_html_inner + '<div id="search_header" class="search-header row gy-3 justify-content-end">';
 		for (var j = 0; j < data_view.length; j++) {
-			str_html_inner = str_html_inner + '<div id='+data_view[j]+' class="col-12 col-md-4"></div>';
+			str_html_inner = str_html_inner + '<div id='+data_view[j]+' class="col-12 col-md-4 row"></div>';
 		}
 		str_html_inner = str_html_inner + '</div>';
 	}
@@ -65,10 +65,10 @@ for (var i = 0; i < oscar_doms.length; i++) {
 	}
 
 	//always put the table of results
-	str_html_inner = str_html_inner + '<div id="search_results" class="search-results col-10 col-lg-12"></div></div>';
+	str_html_inner = str_html_inner + '<div id="search_results" class="search-results mx-auto col-10 col-md-12"></div></div>';
 
 	//put it inside the page
-	oscar_doms[i]['container'].innerHTML = '<div id="search" class="search container mx-auto">'+ str_html_inner + '</div>';
+	oscar_doms[i]['container'].innerHTML = '<div id="search" class="search mx-auto">'+ str_html_inner + '</div>';
 }
 
 
@@ -2385,7 +2385,7 @@ var htmldom = (function () {
 		var str_html= ""+
 			"<div class='adv-search-entry row g-3'>"+
 				"<div class='col-md-8 col-sm-12'>"+
-						"<input entryid="+entryid+" id='adv_input_box_"+entryid+"' class='form-control theme-color' placeholder='"+first_placeholder+"' type='text' name='text'>"+
+						"<input entryid="+entryid+" id='adv_input_box_"+entryid+"' class='form-control py-2 theme-color' placeholder='"+first_placeholder+"' type='text' name='text'>"+
 				"</div>"+
 				"<div class='col-md-4 col-sm-12'>"+
 					"<select type='text' name='rule' entryid="+entryid+" class='form-select py-2' onchange="+onchange_rule+" id='rules_selector_"+entryid+"'>"+
@@ -2463,7 +2463,7 @@ var htmldom = (function () {
 			}
 
 			var str_html =
-			"<div class='rows-per-page mb-3'> Number of rows per page: "+
+			"<div class='rows-per-page mb-3 col-4'> Rows per page: "+
             "<select class='form-select mt-2' onchange='search.update_page_limit(this.options[selectedIndex].text)' id='sel1'>"+
 				options_html+"</select></div>";
 
@@ -2478,7 +2478,7 @@ var htmldom = (function () {
 		if (rowsxpage_container != null) {
 			const newDiv = document.createElement('div');
 			newDiv.innerHTML = '<span id="tot_val" class="text-primary fw-bold">'+String(tot_r)+'</span> resources found';
-			newDiv.className = 'tot-results mt-2';
+			newDiv.className = 'tot-results mt-2 col-6';
 			rowsxpage_container.appendChild(newDiv);
 			return newDiv;
 		}else {
