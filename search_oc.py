@@ -223,7 +223,18 @@ class Main:
     def GET(self):
         web_logger.mes()
         current_subdomain = web.ctx.host.split('.')[0].lower()
-        return render.search(active="", sp_title="", sparql_endpoint="", query_string="", current_subdomain=current_subdomain, render=render)
+        sparql_endpoint_meta= search_config["sparql_endpoint"]["meta"]
+        sparql_endpoint_index= search_config["sparql_endpoint"]["index"]
+        return render.search(
+            active="", 
+            sp_title="", 
+            sparql_endpoint="", 
+            sparql_endpoint_meta=sparql_endpoint_meta,
+            sparql_endpoint_index=sparql_endpoint_index+"/sparql",
+            query_string="", 
+            current_subdomain=current_subdomain, 
+            render=render
+        )
 
 
 class SparqlEndpoint(Sparql):
@@ -250,10 +261,14 @@ class Search:
         web_logger.mes()
         current_subdomain = web.ctx.host.split('.')[0].lower()
         query = web.input(text="", rule="citingdoi")  # rule default a citingdoi
+        sparql_endpoint_json = json.dumps(search_config["sparql_endpoint"])
+        print("giusto un test:", sparql_endpoint_json)
         return render.search(
             active="", 
             sp_title="", 
-            sparql_endpoint="", 
+            sparql_endpoint=sparql_endpoint_json, 
+            sparql_endpoint_meta=search_config["sparql_endpoint"]["meta"],
+            sparql_endpoint_index=search_config["sparql_endpoint"]["index"]+"/sparql",
             query_string=f"text={query.text}&rule={query.rule}", 
             current_subdomain=current_subdomain, 
             render=render

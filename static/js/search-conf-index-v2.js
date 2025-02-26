@@ -1,5 +1,9 @@
+const endpoint_meta = window.endpointConfig?.meta || "http://virtuoso-service.default.svc.cluster.local:8890/sparql"
+const endpoint_index = window.endpointConfig?.index || "http://qlever-service.default.svc.cluster.local:7011"
+
+
 var search_conf = {
-"sparql_endpoint": "https://test.opencitations.net/meta/sparql",
+"sparql_endpoint": "https://search.opencitations.net/sparql/meta",
 "prefixes": [
     {"prefix":"cito","iri":"http://purl.org/spar/cito/"},
     {"prefix":"literal","iri":"http://www.essepuntato.it/2010/06/literalreification/"},
@@ -41,7 +45,7 @@ var search_conf = {
             {
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
                 ?citing datacite:hasIdentifier ?identifier .
-                SERVICE <https://test.opencitations.net/index/sparql> {
+                SERVICE <${endpoint_index}> {
                       ?oci a cito:Citation .
                       ?oci cito:hasCitingEntity ?citing .
                       ?oci cito:hasCitedEntity ?cited .
@@ -62,7 +66,7 @@ var search_conf = {
             {
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
                 ?cited datacite:hasIdentifier ?identifier .
-                SERVICE <https://test.opencitations.net/index/sparql> {
+                SERVICE <${endpoint_index}> {
                       ?oci a cito:Citation .
                       ?oci cito:hasCitedEntity ?cited .
                       ?oci cito:hasCitingEntity ?citing .
@@ -80,9 +84,11 @@ var search_conf = {
       "regex":"(\\d{1,}-\\d{1,})",
       "query": [`
         {
-          BIND(<https://w3id.org/oc/index/ci/[[VAR]]> as ?oci) .
+        BIND(<https://w3id.org/oc/index/ci/[[VAR]]> as ?oci) .
+        SERVICE <${endpoint_index}> {
           ?oci cito:hasCitingEntity ?citing .
           ?oci cito:hasCitedEntity ?cited .
+        }
         }
         `
       ]

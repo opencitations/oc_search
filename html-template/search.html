@@ -1,4 +1,4 @@
-$def with (active, sp_title, sparql_endpoint, query_string, current_subdomain, render)
+$def with (active, sp_title, sparql_endpoint, sparql_endpoint_meta, sparql_endpoint_index, query_string, current_subdomain, render)
 <!DOCTYPE html>
 <html lang="en">
 
@@ -60,6 +60,12 @@ $:render.common.footer()
   <script>window.jQuery || document.write('<script src="/static/js/jquery.min.js"><\/script>')</script>
   <!-- Bootstrap JS -->
   <script src="/static/bootstrap-533/js/bootstrap.bundle.min.js"></script>
+  <script>
+  window.endpointConfig = {
+    meta: "$sparql_endpoint_meta",
+    index: "$sparql_endpoint_index",
+  };
+  </script>
    <!-- SEARCH GUI -->
    <!-- <script type="text/javascript" src="/staticsearch-conf.jsjson"></script> -->
    <script type="text/javascript" src="/static/js/search-conf-index-v2.js"></script>
