@@ -37,27 +37,27 @@ for (var i = 0; i < oscar_doms.length; i++) {
 	var str_html_inner = '<div id="search_extra" class="search-extra"></div>';
 	//OSCAR view section
 	if (oscar_doms[i]["data-view"].length != 0) {
-		str_html_inner = str_html_inner + '<div id="search_header" class="search-header">';
+		str_html_inner = str_html_inner + '<div id="search_header" class="search-header row gy-3">';
 		for (var j = 0; j < data_view.length; j++) {
-			str_html_inner = str_html_inner + '<div id='+data_view[j]+'></div>';
+			str_html_inner = str_html_inner + '<div id='+data_view[j]+' class="col-12 col-md-4"></div>';
 		}
 		str_html_inner = str_html_inner + '</div>';
 	}
-	str_html_inner = str_html_inner + '<div id="search_body" class="search-body">';
+	str_html_inner = str_html_inner + '<div id="search_body" class="search-body row">';
 
 	//OSCAR filter section
 	if (oscar_doms[i]["data-filter"].length != 0) {
-		str_html_inner = str_html_inner + '<div id="search_filters" class="search-filters">';
+		str_html_inner = str_html_inner + '<div id="search_filters" class="search-filters col-10 col-lg-12 mb-4 mb-lg-0">';
 		for (var j = 0; j < data_filter.length; j++) {
 			switch (data_filter[j]) {
 				case 'limit_results':
-						str_html_inner = str_html_inner + '<div id='+data_filter[j]+'></div><div id="filter_btns"></div>';
+						str_html_inner = str_html_inner + '<div id='+data_filter[j]+' class="mb-3"></div><div id="filter_btns" class="mb-3"></div>';
 					break;
 				case 'filter_fields':
 							str_html_inner = str_html_inner + '<div id="filter_values_list"></div>';
 					break;
 				default:
-						str_html_inner = str_html_inner + '<div id='+data_filter[j]+'></div>';
+						str_html_inner = str_html_inner + '<div id='+data_filter[j]+' class="mb-3"></div>';
 			}
 
 		}
@@ -65,10 +65,10 @@ for (var i = 0; i < oscar_doms.length; i++) {
 	}
 
 	//always put the table of results
-	str_html_inner = str_html_inner + '<div id="search_results" class="search-results"></div></div>';
+	str_html_inner = str_html_inner + '<div id="search_results" class="search-results col-10 col-lg-12"></div></div>';
 
 	//put it inside the page
-	oscar_doms[i]['container'].innerHTML = '<div id="search" class="search">'+ str_html_inner + '</div>';
+	oscar_doms[i]['container'].innerHTML = '<div id="search" class="search container mx-auto">'+ str_html_inner + '</div>';
 }
 
 
@@ -2137,6 +2137,7 @@ var htmldom = (function () {
 	var export_container = document.getElementById("export_results");
 	var rowsxpage_container = document.getElementById("rows_per_page");
 	var limitres_container = document.getElementById("limit_results");
+
 	var filter_btns_container = document.getElementById("filter_btns");
 	var filter_values_container = document.getElementById("filter_values_list");
 	var extra_container = document.getElementById("search_extra");
@@ -2152,6 +2153,13 @@ var htmldom = (function () {
 			var index = cols.indexOf(f_obj["value"]);
 			if (index != -1) {
 				var th = document.createElement("th");
+				// Add data-priority attribute based on importance
+				if (f_obj["iskey"]) {
+					th.setAttribute("data-priority", "1"); // Essential column
+				} else {
+					// Set different priorities based on column position
+					th.setAttribute("data-priority", (i < 3) ? "2" : "3");
+				}
 				if (f_obj["column_width"] != undefined) {
 					th.style.width = f_obj["column_width"];
 				}
@@ -2267,60 +2275,35 @@ var htmldom = (function () {
 	function _res_table_pages_nav(arr_values, mypage, tot_pages, tot_res, pages_lim){
 
 		// Create a base pagination with Bootstrap 5.3 classes
-		var paginationHtml = _pages_nav(arr_values, mypage + 1, tot_pages);
-		
-		// Create the prev/next buttons in the Bootstrap 5.3 way
-		var prevNextPagination = document.createElement("nav");
-		prevNextPagination.setAttribute("aria-label", "Page navigation");
-		
-		var paginationList = document.createElement("ul");
-		paginationList.className = "pagination";
-		
-		// Prev button
-		if(mypage > 0){
-			var prevItem = document.createElement("li");
-			prevItem.className = "page-item";
-			
-			var prevLink = document.createElement("a");
-			prevLink.className = "page-link";
-			prevLink.href = "javascript:search.prev_page()";
-			prevLink.innerHTML = "&laquo; Previous";
-			
-			prevItem.appendChild(prevLink);
-			paginationList.appendChild(prevItem);
-		}
-		
-		// Add the existing page numbers
-		var paginationInner = document.createElement("div");
-		paginationInner.innerHTML = paginationHtml;
-		var existingPageItems = paginationInner.firstChild.childNodes;
-		
-		for (var i = 0; i < existingPageItems.length; i++) {
-			paginationList.appendChild(existingPageItems[i].cloneNode(true));
-		}
-		
-		// Next button
-		var remaining_results = tot_res - ((mypage + 1) * pages_lim);
-		if(remaining_results > 0) {
-			var nextItem = document.createElement("li");
-			nextItem.className = "page-item";
-			
-			var nextLink = document.createElement("a");
-			nextLink.className = "page-link";
-			nextLink.href = "javascript:search.next_page()";
-			nextLink.innerHTML = "Next &raquo;";
-			
-			nextItem.appendChild(nextLink);
-			paginationList.appendChild(nextItem);
-		}
-		
-		prevNextPagination.appendChild(paginationList);
+		var paginationHtml = `
+		<nav aria-label="Page navigation">
+			<ul class="pagination pagination-sm flex-wrap justify-content-center">
+				${mypage > 0 ? 
+					`<li class="page-item">
+						<a class="page-link" href="javascript:search.prev_page();" aria-label="Previous">
+							<span aria-hidden="true">&laquo;</span>
+						</a>
+					</li>` : ''
+				}
+				
+				<!-- Page numbers -->
+				${_pages_nav(arr_values, mypage + 1, tot_pages)}
+				
+				${(tot_res - ((mypage + 1) * pages_lim)) > 0 ? 
+					`<li class="page-item">
+						<a class="page-link" href="javascript:search.next_page();" aria-label="Next">
+							<span aria-hidden="true">&raquo;</span>
+						</a>
+					</li>` : ''
+				}
+			</ul>
+		</nav>`;
 		
 		var new_tr = document.createElement("tr");
 		var navCell = document.createElement("td");
 		navCell.colSpan = "100%";
 		navCell.className = "text-center";
-		navCell.appendChild(prevNextPagination);
+		navCell.innerHTML = paginationHtml;
 		new_tr.appendChild(navCell);
 		
 		return new_tr;
@@ -2329,11 +2312,12 @@ var htmldom = (function () {
 	function _checkbox_value(myfield, check_value){
 		var tr = document.createElement("tr");
 		var tabCell = document.createElement("td");
-		tabCell.innerHTML = "<div class='form-check'><input class='form-check-input' type='checkbox' field="+
+		tabCell.innerHTML = "<div class='form-check py-1'><input class='form-check-input' type='checkbox' field="+
 												myfield.value+" value='"+String(check_value.value)+
 												"' onchange='search.checkbox_changed(this);'"+
 												//"checked='"+check_value.checked+"' "+
-												"id='"+String(myfield.value)+"-"+String(check_value.value)+"' "+
+												(check_value.checked ? "checked" : "") +
+												" id='"+String(myfield.value)+"-"+String(check_value.value)+"' "+
 												"><label class='form-check-label' for='"+String(myfield.value)+"-"+String(check_value.value)+"'>"+
 												check_value.label+" ("+check_value.sum+
 												")</label></div>";
@@ -2353,9 +2337,9 @@ var htmldom = (function () {
 
 		var href_string = "javascript:search.select_filter_field('"+String(myfield.value)+"');";
 		if (!is_closed) {
-			tabCell.innerHTML = "Select <a class='search-a' href="+href_string+">"+ title_val +"<arrow>&#8744;</arrow>"+"</a>";
+			tabCell.innerHTML = "Select <a class='search-a d-block d-sm-inline-block' href="+href_string+">"+ title_val +"<arrow>&#8744;</arrow>"+"</a>";
 		}else {
-			tabCell.innerHTML = "Select <a class='search-a' href="+href_string+">"+ title_val +"<arrow>&#8743;</arrow>"+"</a>";
+			tabCell.innerHTML = "Select <a class='search-a d-block d-sm-inline-block' href="+href_string+">"+ title_val +"<arrow>&#8743;</arrow>"+"</a>";
 		}
 		tr.appendChild(tabCell);
 		return tr;
@@ -2400,11 +2384,11 @@ var htmldom = (function () {
 
 		var str_html= ""+
 			"<div class='adv-search-entry row g-3'>"+
-				"<div class='col-md-8'>"+
+				"<div class='col-md-8 col-sm-12'>"+
 						"<input entryid="+entryid+" id='adv_input_box_"+entryid+"' class='form-control theme-color' placeholder='"+first_placeholder+"' type='text' name='text'>"+
 				"</div>"+
-				"<div class='col-md-4'>"+
-					"<select type='text' name='rule' entryid="+entryid+" class='form-select' onchange="+onchange_rule+" id='rules_selector_"+entryid+"'>"+
+				"<div class='col-md-4 col-sm-12'>"+
+					"<select type='text' name='rule' entryid="+entryid+" class='form-select py-2' onchange="+onchange_rule+" id='rules_selector_"+entryid+"'>"+
 					str_options+
 					"</select>"+
 				"</div>"+
@@ -2445,22 +2429,24 @@ var htmldom = (function () {
 	/*creates the pages navigator*/
 	function _pages_nav(arr_values, mypage, tot_pages){
 		var str_html = "";
-		var str_start = "<ul class='pagination'>";
-		if (arr_values[0] > 1) { str_start = str_start + "<li class='page-item disabled'><span class='page-link'>...</span></li>";}
-
-		var str_end = "</ul>";
-		if (arr_values[arr_values.length - 1] < tot_pages) { 
-			str_end = "<li class='page-item disabled'><span class='page-link'>...</span></li>"+ str_end;
+		
+		// Add ellipsis if needed at start
+		if (arr_values[0] > 1) {
+			str_html += "<li class='page-item disabled'><span class='page-link'>...</span></li>";
 		}
 		
-		for (var i = arr_values.length - 1; i >= 0; i--) {
-			var elem_a = "<li class='page-item'><a class='page-link' href='javascript:search.select_page("+String(arr_values[i]-1)+");'>"+ String(arr_values[i])+"</a></li>";
-			if (arr_values[i] == mypage) {
-				elem_a = "<li class='page-item active' aria-current='page'><a class='page-link' href='javascript:search.select_page("+String(arr_values[i]-1)+");'>"+ String(arr_values[i])+"</a></li>";
-			}
-			str_html = elem_a + str_html;
+		// Add page numbers
+		for (var i = 0; i < arr_values.length; i++) {
+			var page_class = arr_values[i] == mypage ? "page-item active" : "page-item";
+			str_html += "<li class='" + page_class + "'><a class='page-link' href='javascript:search.select_page(" + 
+						String(arr_values[i]-1) + ");'>" + String(arr_values[i]) + "</a></li>";
 		}
-		str_html = str_start + str_html + str_end;
+		
+		// Add ellipsis if needed at end
+		if (arr_values[arr_values.length - 1] < tot_pages) {
+			str_html += "<li class='page-item disabled'><span class='page-link'>...</span></li>";
+		}
+		
 		return str_html;
 	}
 
@@ -2477,8 +2463,8 @@ var htmldom = (function () {
 			}
 
 			var str_html =
-			"<div class='rows-per-page'> Number of rows per page: "+
-            "<select class='form-select' onchange='search.update_page_limit(this.options[selectedIndex].text)' id='sel1'>"+
+			"<div class='rows-per-page mb-3'> Number of rows per page: "+
+            "<select class='form-select mt-2' onchange='search.update_page_limit(this.options[selectedIndex].text)' id='sel1'>"+
 				options_html+"</select></div>";
 
 			rowsxpage_container.innerHTML = str_html;
@@ -2491,8 +2477,8 @@ var htmldom = (function () {
 	function tot_results(tot_r) {
 		if (rowsxpage_container != null) {
 			const newDiv = document.createElement('div');
-			newDiv.innerHTML = '<span id="tot_val">'+String(tot_r)+'</span> resources found';
-			newDiv.className = 'tot-results';
+			newDiv.innerHTML = '<span id="tot_val" class="text-primary fw-bold">'+String(tot_r)+'</span> resources found';
+			newDiv.className = 'tot-results mt-2';
 			rowsxpage_container.appendChild(newDiv);
 			return newDiv;
 		}else {
@@ -2527,7 +2513,7 @@ var htmldom = (function () {
 			options_html= options_html + str_option;
 
 			var str_html =
-				"<div class='sort-results'>Sort: <select class='form-select' onchange='search.check_sort_opt(this.options[selectedIndex])' id='sort_box_input'>"+
+				"<div class='sort-results mb-3'>Sort by: <select class='form-select mt-2' onchange='search.check_sort_opt(this.options[selectedIndex])' id='sort_box_input'>"+
 				options_html+"</select></div>";
 
 			sort_container.innerHTML = str_html;
@@ -2547,7 +2533,7 @@ var htmldom = (function () {
                         <h2>Search inside the <a href='/'><span class='theme-color'>Open</span><span class='oc-blue'>Citations</span></a> corpus</h2>
                         <form class="input-group search-box" action="${search_base_path}" method="get">
                             <input type="text" class="form-control theme-color" placeholder="Search..." name="text">
-                            <button class="btn btn-outline-secondary theme-color" type="submit"><i class="bi bi-search"></i></button>
+                            <button class="btn btn-outline-secondary theme-color" type="submit"><i class="fa fa-search"></i></button>
                         </form>
                     </div>
                 </div>
@@ -2603,7 +2589,7 @@ var htmldom = (function () {
                 <div class="col-12">
                     <div class="adv-search">
                         <div class="adv-search-nav mb-4">
-                            <ul class="nav nav-pills">
+                            <ul class="nav nav-pills flex-column flex-md-row">
                                 ${str_lis}
                             </ul>
                         </div>
@@ -2617,13 +2603,13 @@ var htmldom = (function () {
                                 </div>
                             </div>
                             <div class="adv-search-footer mt-4">
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-primary" id="advsearch_btn" type="submit">
-                                        <i class="bi bi-search me-2"></i>
+                                <div class="d-flex flex-column flex-md-row gap-2">
+                                    <button class="btn btn-primary w-100 w-md-auto mb-2 mb-md-0" id="advsearch_btn" type="submit">
+                                        <i class="fa fa-search me-2"></i>
                                         <span class="search-btn-text">${adv_btn_title}</span>
                                     </button>
-                                    <button type="button" class="btn btn-secondary" id="add_rule_btn">
-                                        <i class="bi bi-plus me-2"></i>
+                                    <button type="button" class="btn btn-secondary w-100 w-md-auto" id="add_rule_btn">
+                                        <i class="fa fa-plus me-2"></i>
                                         <span class="add-btn-text">Add Rule</span>
                                     </button>
                                 </div>
@@ -2654,7 +2640,7 @@ var htmldom = (function () {
 				}
 
 				var str_href = `javascript:search.switch_adv_category('${arr_categories[i].name}')`;
-				str_lis = `${str_lis}<li class="nav-item"><a class="nav-link ${is_active}" href="${str_href}">${arr_categories[i].label}</a></li>`;
+				str_lis = `${str_lis}<li class="nav-item mb-2 mb-md-0 me-md-2"><a class="nav-link ${is_active}" href="${str_href}">${arr_categories[i].label}</a></li>`;
 			}
 			return str_lis;
 		}
@@ -2667,8 +2653,8 @@ var htmldom = (function () {
 		id_rows++;
 		var str_html = ''+
 			'<fieldset id="'+id_rows+'" class="p-3 mb-3 border rounded">'+
-				'<div class="d-flex align-items-center gap-3 mb-3">'+
-					'<div class="btn-group" role="group" aria-label="Logical connectors">'+
+				'<div class="d-flex flex-column flex-md-row align-items-center gap-3 mb-3">'+
+					'<div class="btn-group w-100 w-md-auto" role="group" aria-label="Logical connectors">'+
 						'<input type="radio" class="btn-check" name="bc_'+id_rows+'" id="and_'+id_rows+'" value="and" entryid="'+id_rows+'" checked autocomplete="off">'+
 						'<label class="btn btn-outline-secondary" for="and_'+id_rows+'">And</label>'+
 						
@@ -2678,8 +2664,8 @@ var htmldom = (function () {
 						'<input type="radio" class="btn-check" name="bc_'+id_rows+'" id="and_not_'+id_rows+'" value="and_not" entryid="'+id_rows+'" autocomplete="off">'+
 						'<label class="btn btn-outline-secondary" for="and_not_'+id_rows+'">And Not</label>'+
 					'</div>'+
-					'<div class="ms-auto">'+
-						'<button entryid="'+id_rows+'" class="btn btn-outline-danger" type="button" id="remove_rule_btn_'+id_rows+'" onclick="htmldom.remove_adv_rule('+id_rows+')"><i class="bi bi-dash me-1"></i>Remove</button>'+
+					'<div class="ms-auto w-100 w-md-auto text-center text-md-end">'+
+						'<button entryid="'+id_rows+'" class="btn btn-outline-danger" type="button" id="remove_rule_btn_'+id_rows+'" onclick="htmldom.remove_adv_rule('+id_rows+')"><i class="fa fa-minus me-1"></i>Remove</button>'+
 					'</div>'+
 				'</div>'+
 				_build_rule_entry(id_rows, arr_rules, adv_cat_selected)+
@@ -2708,9 +2694,9 @@ var htmldom = (function () {
 	function filter_btns(){
 		if (filter_btns_container != null) {
 			var str_html = `
-            <div class="btn-group filters-btns" id="filters_btns" role="group" aria-label="Filter buttons">
-                <button type="button" class="btn btn-primary" id="all" onclick="search.show_all();">All</button>
-                <button type="button" class="btn btn-primary" id="show-only" onclick="search.show_or_exclude(true);" disabled>Show only</button>
+            <div class="d-flex flex-column flex-md-row filters-btns" id="filters_btns" role="group" aria-label="Filter buttons">
+                <button type="button" class="btn btn-primary mb-2 mb-md-0 me-0 me-md-2" id="all" onclick="search.show_all();">All</button>
+                <button type="button" class="btn btn-primary mb-2 mb-md-0 me-0 me-md-2" id="show-only" onclick="search.show_or_exclude(true);" disabled>Show only</button>
                 <button type="button" class="btn btn-primary" id="exclude" onclick="search.show_or_exclude(false);" disabled>Exclude</button>
             </div>`;
 			filter_btns_container.innerHTML = str_html;
@@ -2724,7 +2710,7 @@ var htmldom = (function () {
 	function filter_history_tab(){
 		var new_tab = document.createElement('table');
 		new_tab.setAttribute("id", 'filter_history_tab');
-		new_tab.setAttribute("class", 'filter-history-tab');
+		new_tab.setAttribute("class", 'filter-history-tab table table-sm mt-3');
 		var new_p = document.createElement('p');
 		new_p.innerHTML = new_tab.outerHTML;
 
@@ -2776,15 +2762,15 @@ var htmldom = (function () {
 	function limit_filter(init_val, tot_res, slider_min, slider_max){
 		if (limitres_container != null) {
 			var str_html = `
-            <div class="limit-results">
-                Limit to <span class="limit-results-value" id="lbl_range">${init_val}</span>/${tot_res} results
+            <div class="limit-results mb-3">
+                Limit to <span class="limit-results-value fw-bold" id="lbl_range">${init_val}</span>/${tot_res} results
             </div>
-            <div class="slider-container">
+            <div class="slider-container mb-2">
                 <input type="range" min="${slider_min}" max="${slider_max}" value="${init_val}" class="form-range" oninput="lbl_range.innerHTML=this.value; search.update_res_limit(this.value);" id="myRange">
             </div>
-            <div class="slider-footer d-flex justify-content-between">
-                <div class="left">&#60; Fewer</div>
-                <div class="right">More &#62;</div>
+            <div class="slider-footer d-flex justify-content-between mb-3">
+                <div class="left text-secondary">&#60; Fewer</div>
+                <div class="right text-secondary">More &#62;</div>
             </div>`;
 			limitres_container.innerHTML = str_html;
 			return str_html;
@@ -2805,7 +2791,7 @@ var htmldom = (function () {
 			for (var i = 0; i < myfields.length; i++) {
 
 						var divtab = __create_inner_tab_container(myfields[i].value)
-						var table = divtab.firstChild;
+						var table = divtab.firstChild.firstChild; // Get through the responsive wrapper
 
 						//insert the header
 						var tr = table.insertRow(-1);
@@ -2829,10 +2815,10 @@ var htmldom = (function () {
 
 									for (var j = j_from; j < j_to; j++) {
 										//insert a checkbox entry
-										tr = inner_divtab.firstChild.insertRow(-1);
+										tr = inner_divtab.firstChild.firstChild.insertRow(-1);
 										tr.innerHTML = _checkbox_value(myfields[i],arr_check_values[j]).outerHTML;
 									}
-									tr = inner_divtab.firstChild.insertRow(-1);
+									tr = inner_divtab.firstChild.firstChild.insertRow(-1);
 									tr.innerHTML = _filter_vals_pages_nav(j_from,j_to,arr_check_values.length,myfields[i]).outerHTML;
 
 									tab_arr.push(divtab);
@@ -2851,9 +2837,10 @@ var htmldom = (function () {
 				for (var i = 0; i < tab_arr.length; i++) {
 					filter_values_container.appendChild(tab_arr[i]);
 				}
-				//filter_values_container.appendChild(table);
 
 				__update_checkboxes();
+				// Call touch-friendly function after building
+				initTouchFriendlyControls();
 
 				//click and check the enabled checkboxes
 				function __update_checkboxes() {
@@ -2866,22 +2853,52 @@ var htmldom = (function () {
 							for (var j = 0; j < j_to; j++) {
 								var dom_id = arr_check_values[j].field+"-"+arr_check_values[j].value;
 								if (arr_check_values[j].checked == true) {
-									document.getElementById(dom_id).click();
+									var checkbox = document.getElementById(dom_id);
+									if (checkbox && !checkbox.checked) {
+										checkbox.checked = true;
+									}
 								}
 							}
 						}
 					}
 				}
 				function __create_inner_tab_container(class_val){
-					// create dynamic table
+					// Create responsive wrapper first
+					var responsiveWrapper = document.createElement("div");
+					responsiveWrapper.className = "table-responsive";
+					
+					// Create dynamic table
 					var table = document.createElement("table");
-					table.className = "table filter-values-tab";
-
+					table.className = "table filter-values-tab mb-3";
+					
+					responsiveWrapper.appendChild(table);
+					
 					var divtab = document.createElement("div");
 					divtab.className = class_val;
-					divtab.appendChild(table);
+					divtab.appendChild(responsiveWrapper);
 					return divtab;
 				}
+		}
+	}
+
+	// Add function for touch-friendly controls
+	function initTouchFriendlyControls() {
+		// Make dropdowns easier to tap
+		var dropdowns = document.querySelectorAll('.form-select');
+		for (var i = 0; i < dropdowns.length; i++) {
+			dropdowns[i].classList.add('py-2'); // Add more padding
+		}
+		
+		// Improve checkbox tap targets
+		var checkboxes = document.querySelectorAll('.form-check');
+		for (var i = 0; i < checkboxes.length; i++) {
+			checkboxes[i].classList.add('py-1', 'my-1'); // Add more vertical space
+		}
+		
+		// Increase touch targets for pagination links
+		var paginationLinks = document.querySelectorAll('.pagination .page-link');
+		for (var i = 0; i < paginationLinks.length; i++) {
+			paginationLinks[i].classList.add('px-3', 'py-2'); // Add more padding
 		}
 	}
 
@@ -2896,7 +2913,7 @@ var htmldom = (function () {
 				var abort_obj = progress_loader.abort;
 				var str_html_abort = "";
 				if (abort_obj != undefined) {
-  				str_html_abort = "<p><div id='abort_search' class='abort-search'><a href="+abort_obj.href_link+" class='allert-a'>"+abort_obj.title+"</a></div></p>";
+  				str_html_abort = "<p><div id='abort_search' class='abort-search'><a href="+abort_obj.href_link+" class='allert-a btn btn-sm btn-outline-danger'>"+abort_obj.title+"</a></div></p>";
 				}
 
 				var title_obj = progress_loader.title;
@@ -2917,7 +2934,12 @@ var htmldom = (function () {
 					str_html_spinner = "<p><div class='searchloader spinner-border' role='status'><span class='visually-hidden'>Loading...</span></div></p>";
 				}
 
-				var str_html = str_html_title + str_html_subtitle + str_html_spinner + str_html_abort;
+				var str_html = `<div class="text-center p-4">
+					${str_html_title}
+					${str_html_subtitle}
+					${str_html_spinner}
+					${str_html_abort}
+				</div>`;
 				parser = new DOMParser()
 	  		//var dom = parser.parseFromString(str_html, "text/xml").firstChild;
 				//header_container.appendChild(dom);
@@ -2940,8 +2962,17 @@ var htmldom = (function () {
 
 				var new_arr_tab = __build_page(table_conf);
 				results_container.innerHTML = "";
-				results_container.appendChild(new_arr_tab[0]);
+				// Wrap the table in a responsive container
+				var responsiveWrapper = document.createElement("div");
+				responsiveWrapper.className = "table-responsive";
+				responsiveWrapper.appendChild(new_arr_tab[0]);
+				
+				// Add the table and footer to the results container
+				results_container.appendChild(responsiveWrapper);
 				results_container.appendChild(new_arr_tab[1]);
+				
+				// Initialize touch-friendly controls
+				initTouchFriendlyControls();
 
 				function __build_page(){
 					// create new tables
@@ -2949,7 +2980,7 @@ var htmldom = (function () {
 					var new_footer_tab = document.createElement("table");
 
 					new_tab_res.id = "tab_res";
-					new_tab_res.className = "table table-striped table-responsive results-tab";
+					new_tab_res.className = "table table-striped results-tab";
 
 					//create table header
 					var col = table_conf.view.data["head"]["vars"];
@@ -2975,7 +3006,7 @@ var htmldom = (function () {
 						new_footer_tab = _table_footer(false, __init_prev_next_btn());
 					}else {
 						//i have no results
-						new_footer_tab = _table_footer(true, "No results were found");
+						new_footer_tab = _table_footer(true, `<div class="alert alert-info py-4">No results were found</div>`);
 					}
 
 					return [new_tab_res,new_footer_tab];
@@ -3103,15 +3134,18 @@ var htmldom = (function () {
 			if (export_container.firstChild != null) {
 				return 1;
 			}
+			var linkContainer = document.createElement("div");
+			linkContainer.className = "export-results mb-3";
+			
 			var link = document.createElement("a");
 			link.id = "export_a";
-			link.className = "search-a export-results";
-			link.innerHTML = "Export results";
+			link.className = "btn btn-outline-primary btn-sm";
+			link.innerHTML = '<i class="fa fa-download me-1"></i> Export results';
 			link.setAttribute("href", "javascript:search.export_results();");
-
-			export_container.appendChild(link);
+			
+			linkContainer.appendChild(link);
+			export_container.appendChild(linkContainer);
 			return 1;
-			//header_container.appendChild(link);
 		}
 	}
 
@@ -3174,6 +3208,7 @@ var htmldom = (function () {
 		remove_adv_rule: remove_adv_rule,
 		reset_html_structure:reset_html_structure,
 		download_results: download_results,
-		adv_placeholder: adv_placeholder
+		adv_placeholder: adv_placeholder,
+		initTouchFriendlyControls: initTouchFriendlyControls
 	}
 })();
