@@ -413,84 +413,96 @@ var search = (function () {
 		}
 
 		/*call the SPARQL end point through a GET*/
-		function _call_ts(rule_category, rules, rule_index, sparql_query, query_text=null, query_label=null, callbk_fun=null){
+		function _call_ts(rule_category, rules, rule_index, sparql_query, query_text=null, query_label=null, callbk_fun=null, attempt = 0) {
+			// Progressive timeout: 2s for first try, 10s for retry
+			const timeouts = [2000, 5000, 20000];
+			const currentTimeout = attempt < timeouts.length ? timeouts[attempt] : timeouts[timeouts.length - 1];
+			
+			console.log(`Attempt ${attempt + 1} with timeout ${currentTimeout}ms`);
+			
 			//use this url to contact the sparql_endpoint triple store
-			var query_contact_tp = String(search_conf_json.sparql_endpoint)+"?query="+ encodeURIComponent(sparql_query) +"&format=json";
-
+			var query_contact_tp = String(search_conf_json.sparql_endpoint) + "?query=" + encodeURIComponent(sparql_query) + "&format=json";
+		
 			//reset all doms
 			htmldom.reset_html_structure();
-
+		
 			//put a loader div
-			if (util.get_obj_key_val(search_conf_json,"progress_loader.visible") == true) {
-				htmldom.loader(true,search_conf_json["progress_loader"],query_label);
+			if (util.get_obj_key_val(search_conf_json, "progress_loader.visible") == true) {
+				htmldom.loader(true, search_conf_json["progress_loader"], query_label);
 			}
-
+		
 			//call the sparql end point and retrieve results in json format
 			$.ajax({
-						dataType: "json",
-						url: query_contact_tp,
-						type: 'GET',
-						async: async_call,
-						timeout: util.get_obj_key_val(search_conf_json,"timeout.value"),
-						error: function(jqXHR, textStatus, errorThrown) {
-        				if(textStatus==="timeout") {
-									var redirect_text = util.get_obj_key_val(search_conf_json,"timeout.text");
-									if (redirect_text != undefined) {
-										if (callbk_fun != null) {
-
-											Reflect.apply(callbk_fun,undefined,[
-														callbk_query,
-														JSON.parse(JSON.stringify(table_conf)),
-														JSON.parse(JSON.stringify(cat_conf)),
-														true]);
-
-										 //_init_data({'results':{'bindings':[]}},callbk = callbk_fun, callbk_query = query_text, check_and_update = false);
-									 }else {
-									 	 	htmldom.loader(false, search_conf_json["progress_loader"], on_remove_text = redirect_text);
-									 }
-									}else {
-										var redirect_link = util.get_obj_key_val(search_conf_json,"timeout.link");
-										if (redirect_link != undefined) {
-											window.location.replace(redirect_link);
-										}
-									}
-        				}
-    				},
-						success: function( res_data ) {
-
-								if (util.get_obj_key_val(search_conf_json,"interface") != false) {
-									if (util.get_obj_key_val(search_conf_json,"progress_loader.visible") == true) {
-										htmldom.loader(false, search_conf_json["progress_loader"]);
-									}
+				dataType: "json",
+				url: query_contact_tp,
+				type: 'GET',
+				async: async_call,
+				timeout: currentTimeout,
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus === "timeout") {
+						console.log(`Timeout on attempt ${attempt + 1}`);
+						
+						if (attempt < timeouts.length - 1) {
+							// Retry with longer timeout
+							console.log(`Retrying with longer timeout...`);
+							_call_ts(rule_category, rules, rule_index, sparql_query, query_text, query_label, callbk_fun, attempt + 1);
+						} else {
+							// All retries exhausted
+							var redirect_text = util.get_obj_key_val(search_conf_json, "timeout.text");
+							if (redirect_text != undefined) {
+								if (callbk_fun != null) {
+									Reflect.apply(callbk_fun, undefined, [
+										callbk_query,
+										JSON.parse(JSON.stringify(table_conf)),
+										JSON.parse(JSON.stringify(cat_conf)),
+										true
+									]);
+								} else {
+									htmldom.loader(false, search_conf_json["progress_loader"], on_remove_text = redirect_text);
 								}
-
-								if ((rule_index >= rules.length -1) || (res_data.results.bindings.length > 0)) {
-									sparql_results = res_data;
-									//I have only 1 rule
-									cat_conf = rule_category;
-
-									//in this case don't build the table directly
-									if (callbk_fun != null) {
-									 //look at the rule name
-									 _init_data(res_data,callbk = callbk_fun, callbk_query = query_text, check_and_update = false);
-								 }else {
-								 	 build_table(res_data);
-								 }
-
-								}else {
-										var sparql_query = _build_sparql_query(rules[rule_index+1], query_text);
-										if(sparql_query != -1){
-												var r_cat = search_conf_json.categories[util.index_in_arrjsons(search_conf_json.categories,["name"],[rules[rule_index+1].category])];
-												_call_ts(r_cat, rules, rule_index + 1, sparql_query, query_text, query_text, callbk_fun);
-										}else {
-											//in this case we have no more rules
-											window.location.replace(search_conf_json.timeout.link);
-										}
+							} else {
+								var redirect_link = util.get_obj_key_val(search_conf_json, "timeout.link");
+								if (redirect_link != undefined) {
+									window.location.replace(redirect_link);
 								}
+							}
 						}
-			 });
-			 return sparql_results;
-		}
+					}
+				},
+				success: function(res_data) {
+					if (util.get_obj_key_val(search_conf_json,"interface") != false) {
+						if (util.get_obj_key_val(search_conf_json,"progress_loader.visible") == true) {
+							htmldom.loader(false, search_conf_json["progress_loader"]);
+						}
+					}
+		
+					if ((rule_index >= rules.length -1) || (res_data.results.bindings.length > 0)) {
+						sparql_results = res_data;
+						//I have only 1 rule
+						cat_conf = rule_category;
+		
+						//in this case don't build the table directly
+						if (callbk_fun != null) {
+						 //look at the rule name
+						 _init_data(res_data,callbk = callbk_fun, callbk_query = query_text, check_and_update = false);
+					 }else {
+						 build_table(res_data);
+					 }
+		
+					}else {
+							var sparql_query = _build_sparql_query(rules[rule_index+1], query_text);
+							if(sparql_query != -1){
+									var r_cat = search_conf_json.categories[util.index_in_arrjsons(search_conf_json.categories,["name"],[rules[rule_index+1].category])];
+									_call_ts(r_cat, rules, rule_index + 1, sparql_query, query_text, query_text, callbk_fun);
+							}else {
+								//in this case we have no more rules
+								window.location.replace(search_conf_json.timeout.link);
+							}
+					}
+				}
+		 });
+		 return sparql_results;
+	}
 
 		function build_table(results_data, do_init = true){
 			var res_data = JSON.parse(JSON.stringify(results_data));
@@ -2357,7 +2369,7 @@ var htmldom = (function () {
 		}
 		if ((i_from+1)/myfield.config.min >= 1) {
 			var str_href = "javascript:search.prev_filter_page('"+JSON.stringify(myfield)+"')";
-			str_html= "<ar><a class='arrow-nav left' href="+str_href+">&#8678;</a></ar>" + str_html;
+			str_html= "<ar><a class='arrow-nav left' href="+str_href+">&#8678;</a></ar>";
 		}
 
 		tabCell.innerHTML = str_html;
