@@ -262,7 +262,6 @@ class Search:
         current_subdomain = web.ctx.host.split('.')[0].lower()
         query = web.input(text="", rule="citingdoi")  # rule default a citingdoi
         sparql_endpoint_json = json.dumps(search_config["sparql_endpoint"])
-        print("giusto un test:", sparql_endpoint_json)
         return render.search(
             active="", 
             sp_title="", 
