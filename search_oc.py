@@ -230,7 +230,7 @@ class Main:
             sp_title="", 
             sparql_endpoint="", 
             sparql_endpoint_meta=sparql_endpoint_meta,
-            sparql_endpoint_index=sparql_endpoint_index+"/sparql",
+            sparql_endpoint_index=sparql_endpoint_index,
             query_string="", 
             current_subdomain=current_subdomain, 
             render=render
@@ -267,7 +267,7 @@ class Search:
             sp_title="", 
             sparql_endpoint=sparql_endpoint_json, 
             sparql_endpoint_meta=search_config["sparql_endpoint"]["meta"],
-            sparql_endpoint_index=search_config["sparql_endpoint"]["index"]+"/sparql",
+            sparql_endpoint_index=search_config["sparql_endpoint"]["index"],
             query_string=f"text={query.text}&rule={query.rule}", 
             current_subdomain=current_subdomain, 
             render=render

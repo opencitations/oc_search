@@ -2,6 +2,7 @@ const endpoint_meta = window.endpointConfig?.meta || "http://virtuoso-service.de
 const endpoint_index = window.endpointConfig?.index || "http://qlever-service.default.svc.cluster.local:7011"
 
 
+
 var search_conf = {
 "sparql_endpoint": "https://search.opencitations.net/sparql/meta",
 "prefixes": [
@@ -45,7 +46,7 @@ var search_conf = {
             {
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
                 ?citing datacite:hasIdentifier ?identifier .
-                SERVICE <${endpoint_index}> {
+                SERVICE <${endpoint_index}/sparql> {
                       ?oci a cito:Citation .
                       ?oci cito:hasCitingEntity ?citing .
                       ?oci cito:hasCitedEntity ?cited .
@@ -66,7 +67,7 @@ var search_conf = {
             {
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
                 ?cited datacite:hasIdentifier ?identifier .
-                SERVICE <${endpoint_index}> {
+                SERVICE <${endpoint_index}/sparql> {
                       ?oci a cito:Citation .
                       ?oci cito:hasCitedEntity ?cited .
                       ?oci cito:hasCitingEntity ?citing .
@@ -85,7 +86,7 @@ var search_conf = {
       "query": [`
         {
         BIND(<https://w3id.org/oc/index/ci/[[VAR]]> as ?oci) .
-        SERVICE <${endpoint_index}> {
+        SERVICE <${endpoint_index}/sparql> {
           ?oci cito:hasCitingEntity ?citing .
           ?oci cito:hasCitedEntity ?cited .
         }
