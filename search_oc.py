@@ -23,7 +23,7 @@ search_config = {
         "index": os.getenv("SPARQL_ENDPOINT_INDEX", c["sparql_endpoint"]["index"]),
         "meta": os.getenv("SPARQL_ENDPOINT_META", c["sparql_endpoint"]["meta"])
     },
-    "search_sync_enabled": os.getenv("SPARQL_SYNC_ENABLED", "false").lower() == "true"
+    "sync_enabled": os.getenv("SYNC_ENABLED", "false").lower() == "true"
 }
 
 
@@ -278,7 +278,7 @@ if __name__ == "__main__":
     # Add startup log
     print("Starting SPARQL OpenCitations web application...")
     print(f"Configuration: Base URL={search_config['search_base_url']}")
-    print(f"Sync enabled: {search_config['search_sync_enabled']}")
+    print(f"Sync enabled: {search_config['sync_enabled']}")
     
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='SEARCH OpenCitations web application')
@@ -297,9 +297,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     print(f"Starting on port: {args.port}")
     
-    if args.sync_static or search_config["search_sync_enabled"]:
+    if args.sync_static or search_config["sync_enabled"]:
         # Run sync if either --sync-static is provided (local testing) 
-        # or SEARCH_SYNC_ENABLED=true (Docker environment)
+        # or sync_enabled=true (Docker environment)
         print("Static sync is enabled")
         sync_static_files()
     else:
