@@ -82,7 +82,7 @@ ENV BASE_URL="search.opencitations.net" \
     LOG_DIR="/mnt/log_dir/oc_search"  \
     SPARQL_ENDPOINT_INDEX="http://qlever-service.default.svc.cluster.local:7011" \
     SPARQL_ENDPOINT_META="http://virtuoso-service.default.svc.cluster.local:8890/sparql" \
-    SEARCH_SYNC_ENABLED="true"
+    SYNC_ENABLED="true"
 
 # Install system dependencies
 RUN apt-get update && \
