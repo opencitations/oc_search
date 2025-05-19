@@ -1,4 +1,4 @@
-/* Colori istituzionali neutri */
+/* Neutral institutional colors */
 :root {
     --oc-purple: #9931FC;
     --oc-blue: #2D22DE;
@@ -12,20 +12,20 @@
     --institutional-hover: #eef4fd;
   }
   
-  /* Container principale centrato */
+  /* Main centered container */
   .search.container {
     max-width: 1200px;
     margin: 0 auto;
   }
   
-  /* Wrapper responsive per tabella */
+  /* Responsive wrapper for table */
   #search_results .table-responsive {
     margin: 0 auto;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
   
-  /* Miglioramenti tabella risultati - STILE ISTITUZIONALE */
+  /* Results table improvements - NEW STYLE */
   #search_results .table.results-tab {
     width: 100%;
     margin: 0 auto;
@@ -36,7 +36,7 @@
     /* Rimosso border-radius e box-shadow per stile istituzionale */
   }
   
-  /* Intestazioni tabella - STILE ISTITUZIONALE */
+  /* Table headers - NEW STYLE */
   #search_results .results-tab th {
     background-color: var(--institutional-light-gray) !important;
     color: var(--institutional-gray) !important;
@@ -49,7 +49,7 @@
     border-top: none !important;
   }
   
-  /* Celle della tabella - STILE ISTITUZIONALE */
+  /* Table cells - NEW STYLE */
   #search_results .results-tab td {
     padding: 12px 15px;
     border: 1px solid var(--institutional-border);
@@ -58,17 +58,17 @@
     background-color: #ffffff;
   }
   
-  /* Righe alternate - STILE ISTITUZIONALE */
+  /* Alternate rows - NEW STYLE */
   #search_results .results-tab tbody tr:nth-child(even) td {
     background-color: var(--institutional-light-gray);
   }
   
-  /* Effetto hover sulle righe - STILE ISTITUZIONALE */
+  /* Row hover effect - NEW STYLE */
   #search_results .results-tab tbody tr:hover td {
     background-color: var(--institutional-hover);
   }
   
-  /* Link nelle celle - STILE ISTITUZIONALE */
+  /* Links in cells - NEW STYLE */
   #search_results .results-tab a.res-val-link {
     color: var(--institutional-blue);
     text-decoration: none;
@@ -80,14 +80,14 @@
     text-decoration: underline;
   }
   
-  /* Miglioramenti footer tabella */
+  /* Table footer improvements */
   #search_results .table.tab-footer {
     background: transparent;
     border: none;
     margin-top: 1rem;
   }
   
-  /* Paginazione - STILE ISTITUZIONALE */
+  /* Pagination - NEW STYLE */
   #search_results .pagination {
     justify-content: center;
     margin: 1rem 0;
@@ -122,12 +122,12 @@
     border-color: var(--institutional-border);
   }
   
-  /* Layout responsive header */
+  /* Responsive header layout */
   .search-header .row {
     align-items: center;
   }
   
-  /* Layout filtri e risultati */
+  /* Filters and results layout */
   @media (min-width: 992px) {
     .search-filters {
       padding-right: 2rem;
@@ -138,7 +138,7 @@
     }
   }
   
-  /* Miglioramenti filtri - STILE ISTITUZIONALE */
+  /* Filter improvements - NEW STYLE */
   .search-filters .filter-values-tab {
     border: 1px solid var(--institutional-border);
     overflow: hidden;
@@ -152,7 +152,7 @@
     border-bottom: 1px solid var(--institutional-border);
   }
   
-  /* Checkbox più grandi */
+  /* Larger checkboxes */
   .search-filters .form-check-input {
     width: 1.2em;
     height: 1.2em;
@@ -162,7 +162,7 @@
     padding: 0.5rem 0;
   }
   
-  /* Bottoni filtro - STILE ISTITUZIONALE */
+  /* Filter buttons - NEW STYLE */
   .filters-btns .btn-primary {
     background-color: #ffffff;
     color: var(--institutional-gray);
@@ -178,7 +178,7 @@
     border-color: var(--institutional-border);
   }
   
-  /* Slider filtro - STILE ISTITUZIONALE */
+  /* Filter slider - NEW STYLE */
   .search-filters .form-range::-webkit-slider-thumb {
     background-color: var(--institutional-blue);
     /* Rimosso border-radius per stile istituzionale */
@@ -189,13 +189,13 @@
     /* Rimosso border-radius per stile istituzionale */
   }
   
-  /* Miglioramenti testo di aiuto */
+  /* Help text improvements */
   .tot-results #tot_val {
     color: var(--institutional-blue);
     font-weight: bold;
   }
   
-  /* Tabella nessun risultato */
+  /* No results table */
   .table.tab-footer.noresults {
     text-align: center;
     padding: 2rem 0;
@@ -208,7 +208,7 @@
     border-radius: 0; /* Rimosso border-radius per stile istituzionale */
   }
   
-  /* Media query per dispositivi mobili */
+  /* Mobile devices media queries */
   @media (max-width: 768px) {
     #search_results .results-tab td,
     #search_results .results-tab th {
@@ -229,7 +229,7 @@
     }
   }
   
-  /* Media query per tablet */
+  /* Tablet media queries */
   @media (max-width: 992px) {
     #search_results .results-tab {
       font-size: 13px;
@@ -241,7 +241,7 @@
     }
   }
   
-  /* Spaziatura e margini generali */
+  /* General spacing and margins */
   .search-body {
     margin-top: 1.5rem;
   }
@@ -251,7 +251,7 @@
     font-weight: bold;
   }
   
-  /* Loader migliorato */
+  /* Improved loader */
   .searchloader.spinner-border {
     color: var(--institutional-blue);
   }
@@ -260,9 +260,9 @@
     height: 100%!important;
   }
   
-  /* Stili aggiuntivi per migliorare l'aspetto istituzionale */
+  /* Additional styles to improve institutional appearance */
   
-  /* Prima colonna (ID) con font monospace */
+  /* First column (ID) with monospace font */
   #search_results .results-tab th:first-child,
   #search_results .results-tab td:first-child {
     font-family: 'Courier New', Courier, monospace;
@@ -270,7 +270,7 @@
     width: 15%;
   }
   
-  /* Miglioramenti per l'accessibilità */
+  /* Accessibility improvements */
   #search_results .results-tab th {
     font-size: 14px;
   }
@@ -280,7 +280,7 @@
     line-height: 1.5;
   }
   
-  /* Stili per i link di navigazione nella tabella */
+  /* Navigation link styles in the table */
   #search_results .tab-footer .tab-nav-btn {
     background-color: var(--institutional-light-gray);
     border: 1px solid var(--institutional-border);
@@ -296,7 +296,7 @@
     color: var(--institutional-gray);
   }
   
-  /* Stili per i numeri di pagina nella navigazione */
+  /* Page number styles in navigation */
   #search_results .tab-footer .pages-nav li a {
     background-color: #ffffff;
     border: 1px solid var(--institutional-border);
@@ -320,7 +320,7 @@
     color: var(--institutional-gray);
   }
   
-  /* Stili per testo "No results" */
+  /* No results text styles */
   #search_results .noresults {
     color: var(--institutional-gray);
     font-size: 16px;
