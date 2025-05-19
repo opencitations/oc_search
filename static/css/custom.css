@@ -58,6 +58,11 @@
     color: #2c3e50;
 }
 
+.display-5 {
+    font-weight: 500;
+    color: #293038;
+}
+
 .card-text {
     font-size: 0.95rem;
 }

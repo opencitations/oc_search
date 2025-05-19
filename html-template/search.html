@@ -22,6 +22,7 @@ $def with (active, sp_title, sparql_endpoint, sparql_endpoint_meta, sparql_endpo
   <link rel="stylesheet" href="/static/css/oc-table.css" class="css">
   <!-- Custom HEADER CSS -->
   <link rel="stylesheet" href="/static/css/custom.css" class="css" />
+
 </head>
 
 <body>
@@ -30,18 +31,18 @@ $def with (active, sp_title, sparql_endpoint, sparql_endpoint_meta, sparql_endpo
 
   <main class="container-fluid py-3">
     <div class="row">
-        <div class="col-12">
-            <div class="text-center text-start">
-                <h3 class="mb-4">
-                    <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> 
-                    Corpus Search Interface
-                </h3>
-            </div>
+        <div class="row justify-content-center">
+      <div class="col-12 text-center">
+        <h1 class="brand-title">
+          <span class="display-4">Open</span><span class="display-5">Citations</span> 
+        </h1>
+        <span class="fw-light fs-4">Search Interface</span>
+      </div>
+    </div>
             <div class="cover">
                 <div class="left">
-                  <p class="text-start">Here you can perform queries on the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> <a href="/">Index</a> datasets.
-                  Such as:</p>
-                  <ul class="search-elem">
+                  <p class="text-muted mb-3">Example searches:</p>
+                  <ul class="search-elem text-muted">
                   <li><em>REFERENCES:</em> get the references of a document with DOI: <a href="/search?text=10.1186%2F1756-8722-6-59&rule=citingdoi">10.1186/1756-8722-6-59</a> </li>
                   <li><em>CITATIONS:</em> get the citations of a document with DOI: <a href="/search?text=10.1186%2F1756-8722-5-31&rule=citeddoi">10.1186/1756-8722-5-31</a> </li>
                   <li><em>A CITATION:</em> get the data of a citation with OCI: <a href="/search?text=06190834283-06101389277&rule=oci">06190834283-06101389277</a> </li>

@@ -17,8 +17,9 @@ with open("conf.json") as f:
 
 
 # Docker ENV variables
-search_config = {
-    "search_base_url": os.getenv("SEARCH_BASE_URL", c["search_base_url"]),
+env_config = {
+    "base_url": os.getenv("base_url", c["base_url"]),
+    "log_dir": os.getenv("LOG_DIR", c["log_dir"]),
     "sparql_endpoint": {
         "index": os.getenv("SPARQL_ENDPOINT_INDEX", c["sparql_endpoint"]["index"]),
         "meta": os.getenv("SPARQL_ENDPOINT_META", c["sparql_endpoint"]["meta"])
@@ -53,14 +54,15 @@ urls = (
 )
 
 # Set the web logger
-web_logger = WebLogger("search.opencitations.net", c["log_dir"], [
-    "REMOTE_ADDR",        # The IP address of the visitor
-    "HTTP_USER_AGENT",    # The browser type of the visitor
-    "HTTP_REFERER",       # The URL of the page that called your program
-    "HTTP_HOST",          # The hostname of the page being attempted
-    "REQUEST_URI",        # The interpreted pathname of the requested document
-                          # or CGI (relative to the document root)
-    "HTTP_AUTHORIZATION",  # Access token
+web_logger = WebLogger(env_config["base_url"], env_config["log_dir"], [
+    "HTTP_X_FORWARDED_FOR", # The IP address of the client
+    "REMOTE_ADDR",          # The IP address of internal balancer
+    "HTTP_USER_AGENT",      # The browser type of the visitor
+    "HTTP_REFERER",         # The URL of the page that called your program
+    "HTTP_HOST",            # The hostname of the page being attempted
+    "REQUEST_URI",          # The interpreted pathname of the requested document
+                            # or CGI (relative to the document root)
+    "HTTP_AUTHORIZATION",   # Access token
     ],
     # comment this line only for test purposes
      {"REMOTE_ADDR": ["130.136.130.1", "130.136.2.47", "127.0.0.1"]}
@@ -223,8 +225,8 @@ class Main:
     def GET(self):
         web_logger.mes()
         current_subdomain = web.ctx.host.split('.')[0].lower()
-        sparql_endpoint_meta= search_config["sparql_endpoint"]["meta"]
-        sparql_endpoint_index= search_config["sparql_endpoint"]["index"]
+        sparql_endpoint_meta= env_config["sparql_endpoint"]["meta"]
+        sparql_endpoint_index= env_config["sparql_endpoint"]["index"]
         return render.search(
             active="", 
             sp_title="", 
@@ -245,14 +247,14 @@ class SparqlEndpoint(Sparql):
 class SparqlIndex(Sparql):
     def __init__(self):
         Sparql.__init__(self, 
-                       search_config["sparql_endpoint"]["index"],
+                       env_config["sparql_endpoint"]["index"],
                        "sparql index", 
                        "/sparql/index")
 
 class SparqlMeta(Sparql):
     def __init__(self):
         Sparql.__init__(self, 
-                       search_config["sparql_endpoint"]["meta"],
+                       env_config["sparql_endpoint"]["meta"],
                        "sparql meta", 
                        "/sparql/meta")
 
@@ -261,13 +263,13 @@ class Search:
         web_logger.mes()
         current_subdomain = web.ctx.host.split('.')[0].lower()
         query = web.input(text="", rule="citingdoi")  # rule default a citingdoi
-        sparql_endpoint_json = json.dumps(search_config["sparql_endpoint"])
+        sparql_endpoint_json = json.dumps(env_config["sparql_endpoint"])
         return render.search(
             active="", 
             sp_title="", 
             sparql_endpoint=sparql_endpoint_json, 
-            sparql_endpoint_meta=search_config["sparql_endpoint"]["meta"],
-            sparql_endpoint_index=search_config["sparql_endpoint"]["index"],
+            sparql_endpoint_meta=env_config["sparql_endpoint"]["meta"],
+            sparql_endpoint_index=env_config["sparql_endpoint"]["index"],
             query_string=f"text={query.text}&rule={query.rule}", 
             current_subdomain=current_subdomain, 
             render=render
@@ -276,9 +278,9 @@ class Search:
 # Run the application
 if __name__ == "__main__":
     # Add startup log
-    print("Starting SPARQL OpenCitations web application...")
-    print(f"Configuration: Base URL={search_config['search_base_url']}")
-    print(f"Sync enabled: {search_config['sync_enabled']}")
+    print("Starting SEARCH OpenCitations web application...")
+    print(f"Configuration: Base URL={env_config['base_url']}")
+    print(f"Sync enabled: {env_config['sync_enabled']}")
     
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='SEARCH OpenCitations web application')
@@ -297,7 +299,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     print(f"Starting on port: {args.port}")
     
-    if args.sync_static or search_config["sync_enabled"]:
+    if args.sync_static or env_config["sync_enabled"]:
         # Run sync if either --sync-static is provided (local testing) 
         # or sync_enabled=true (Docker environment)
         print("Static sync is enabled")

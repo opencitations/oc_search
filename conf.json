@@ -2,7 +2,7 @@
   "html": "html-template",
   "log_dir": "./log/",
   "oc_services_templates": "https://github.com/opencitations/oc_services_templates",
-  "search_base_url": "search.opencitations.net",
+  "base_url": "search.opencitations.net",
   "sparql_endpoint": {
     "index": "http://qlever-service.default.svc.cluster.local:7011",
     "meta": "http://virtuoso-service.default.svc.cluster.local:8890/sparql"
