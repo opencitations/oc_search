@@ -17,7 +17,7 @@ The service requires the following environment variables. These values take prec
 For instance:
 
 ```env
-SEARCH_BASE_URL=search.opencitations.net
+BASE_URL=search.opencitations.net
 LOG_DIR=/home/dir/log/
 SPARQL_ENDPOINT_INDEX=http://qlever-service.default.svc.cluster.local:7011  
 SPARQL_ENDPOINT_META=http://virtuoso-service.default.svc.cluster.local:8890/sparql
@@ -104,5 +104,5 @@ RUN pip install -r requirements.txt
 EXPOSE 8080
 
 # Start the application
-CMD ["python3", "search_oc.py", "--sync-static"]
+CMD ["python3", "search_oc.py"]
 ```
