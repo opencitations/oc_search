@@ -265,7 +265,7 @@ a.anchor {
 
 
 /*when the resolution is less than max-width*/
-@media (max-width: 1200px) {
+@media (max-width: 991.98px) {
 
       /*make the website page larger*/
       .cover-container {
