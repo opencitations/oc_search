@@ -128,7 +128,7 @@ var search_conf = {
   "search_base_path": "search",
   "advanced_search": true,
   "def_adv_category": "citation",
-  "adv_btn_title": "Search in the OpenCitations Indexes",
+  "adv_btn_title": "Search",
 
   "progress_loader":{
             "visible": true,

@@ -18,7 +18,7 @@ with open("conf.json") as f:
 
 # Docker ENV variables
 env_config = {
-    "base_url": os.getenv("base_url", c["base_url"]),
+    "base_url": os.getenv("BASE_URL", c["base_url"]),
     "log_dir": os.getenv("LOG_DIR", c["log_dir"]),
     "sparql_endpoint": {
         "index": os.getenv("SPARQL_ENDPOINT_INDEX", c["sparql_endpoint"]["index"]),
