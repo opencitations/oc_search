@@ -19,7 +19,7 @@ $def with (active, sp_title, sparql_endpoint, sparql_endpoint_meta, sparql_endpo
   <!-- Custom styles for this template -->
   <link href="/static/css/cover.css" rel="stylesheet" />
   <link href="/static/css/search.css" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/css/oc-table.css" class="css">
+  <!--<link rel="stylesheet" href="/static/css/oc-table.css" class="css">-->
   <!-- Custom HEADER CSS -->
   <link rel="stylesheet" href="/static/css/custom.css" class="css" />
 
@@ -32,28 +32,49 @@ $def with (active, sp_title, sparql_endpoint, sparql_endpoint_meta, sparql_endpo
   <main class="container-fluid py-3">
     <div class="row">
         <div class="row justify-content-center">
+
+      <!--
       <div class="col-12 text-center">
         <h1 class="brand-title">
-          <span class="display-4">Open</span><span class="display-5">Citations</span> 
+          <span class="display-4">Open</span><span class="display-5">Citations</span>
         </h1>
         <span class="fw-light fs-4">Search Interface</span>
       </div>
+      -->
     </div>
             <div class="cover">
-                <div class="left">
+                <!--<div class="left">
                   <p class="text-muted mb-3">Example searches:</p>
                   <ul class="search-elem text-muted">
                   <li><em>REFERENCES:</em> get the references of a document with DOI: <a href="/search?text=10.1186%2F1756-8722-6-59&rule=citingdoi">10.1186/1756-8722-6-59</a> </li>
                   <li><em>CITATIONS:</em> get the citations of a document with DOI: <a href="/search?text=10.1186%2F1756-8722-5-31&rule=citeddoi">10.1186/1756-8722-5-31</a> </li>
                   <li><em>A CITATION:</em> get the data of a citation with OCI: <a href="/search?text=06190834283-06101389277&rule=oci">06190834283-06101389277</a> </li>
                   </ul>
-                </div>
+                </div>-->
                 <div class="__oscar__" data-type="advanced" data-view="rows_per_page export_results sort_results" data-filter="limit_results filter_fields"></div>
-              </div>
+            </div>
+
+
+            <!-- <div class="row">
+                <div class="col-6">
+                    <a href="/search?text=10.1186%2F1756-8722-6-59&rule=citingdoi"
+                       class="btn btn-secondary btn-sm"
+                       onclick="document.querySelectorAll('.example-btn').forEach(btn => btn.style.display='none')">
+                       Get the references of: "10.1186/1756-8722-6-59"
+                    </a>
+
+                    <a href="/search?text=10.1186%2F1756-8722-5-31&rule=citeddoi"
+                       class="btn btn-secondary btn-sm"
+                       onclick="document.querySelectorAll('.example-btn').forEach(btn => btn.style.display='none')">
+                       Get the citations of: "10.1186/1756-8722-5-31"
+                    </a>
+                  </div>
+            </div> -->
+
         </div>
     </div>
 </main>
-$:render.common.footer()
+  <!--$:render.common.footer()-->
   <!-- Placed at the end of the document so the pages load faster -->
   <script src="/static/js/jquery.min.js"><![CDATA[ ]]></script>
   <script>window.jQuery || document.write('<script src="/static/js/jquery.min.js"><\/script>')</script>

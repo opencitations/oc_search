@@ -15,7 +15,7 @@
   /* padding-top: 5%; */
   width:100%;
   height:auto;
-  overflow:auto
+  margin-bottom: 80px;
 }
 
 #search_extra{
@@ -26,6 +26,7 @@
 #search_header{
   width:100%;
   height: 50px;
+  margin-bottom: 20px;
 }
 
 #rows_per_page {
@@ -208,6 +209,7 @@ spanfooter + spanfooter {
 }
 
 select {
+  width: unset !important;
   text-indent: 0%;
   /* margin: 5px; */
 }
@@ -355,7 +357,7 @@ td ar + ar {
 .search-entry{
   font-size: 230%;
   margin-top: 70px;
-  width: 75%;
+  width: 65%;
   margin-right: auto;
   margin-left: auto;
 }

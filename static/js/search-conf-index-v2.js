@@ -118,7 +118,7 @@ var search_conf = {
         "cited_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["cited"]}, "async": true}
       },
       "extra_elems":[
-        {"elem_type": "a","elem_value": "Back to search" ,"elem_class": "btn btn-primary left" ,"elem_innerhtml": "Show the search interface", "others": {"href": "/"}}
+        {"elem_type": "a","elem_value": "Back to search" ,"elem_class": "btn btn-primary left" ,"elem_innerhtml": "Back to the search", "others": {"href": "/"}}
       ]
     }
   ],
@@ -126,14 +126,14 @@ var search_conf = {
   "page_limit": [5,10,15,20,30,40,50],
   "def_results_limit": 1,
   "search_base_path": "search",
-  "advanced_search": true,
+  "advanced_search": false,
   "def_adv_category": "citation",
   "adv_btn_title": "Search in the OpenCitations Indexes",
 
   "progress_loader":{
             "visible": true,
             "spinner": true,
-            "title":"Searching in the OpenCitations Indexes ...",
+            "title":"Searching in OpenCitations ...",
             "subtitle":"Be patient - this search might take several seconds!",
             "abort":{"title":"Abort Search","href_link":"/"}
           },
