@@ -44,7 +44,12 @@ var search_conf = {
       "regex":"(.+)",
       "query": [`
             {
-                ?identifier literal:hasLiteralValue "[[VAR]]" .
+                {
+                  ?identifier literal:hasLiteralValue "[[VAR]]" .
+                }UNION{
+                  ?identifier literal:hasLiteralValue "[[VAR]]"^^<http://www.w3.org/2001/XMLSchema#string> .
+                }
+
                 ?citing datacite:hasIdentifier ?identifier .
                 SERVICE <${endpoint_index}/sparql> {
                       ?oci a cito:Citation .
@@ -65,7 +70,12 @@ var search_conf = {
       "regex":"(.+)",
       "query": [`
             {
-                ?identifier literal:hasLiteralValue "[[VAR]]" .
+                {
+                  ?identifier literal:hasLiteralValue "[[VAR]]" .
+                }UNION{
+                  ?identifier literal:hasLiteralValue "[[VAR]]"^^<http://www.w3.org/2001/XMLSchema#string> .
+                }
+
                 ?cited datacite:hasIdentifier ?identifier .
                 SERVICE <${endpoint_index}/sparql> {
                       ?oci a cito:Citation .
@@ -117,9 +127,9 @@ var search_conf = {
         "citing_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["citing"]}, "async": true},
         "cited_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["cited"]}, "async": true}
       },
-      "extra_elems":[
-        {"elem_type": "a","elem_value": "Back to search" ,"elem_class": "btn btn-primary left" ,"elem_innerhtml": "Back to the search", "others": {"href": "/"}}
-      ]
+      // "extra_elems":[
+      //   {"elem_type": "a","elem_value": "Back to search" ,"elem_class": "btn btn-primary left btn-sm" ,"elem_innerhtml": "Back to the search", "others": {"href": "/"}}
+      // ]
     }
   ],
 

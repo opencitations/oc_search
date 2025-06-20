@@ -34,12 +34,12 @@ for (var i = 0; i < oscar_tags.length; i++) {
 //Build all the inner elements
 for (var i = 0; i < oscar_doms.length; i++) {
 
-	var str_html_inner = '<div id="search_extra" class="search-extra"></div>';
+	var str_html_inner = '<div id="search_extra" class="search-extra row mx-auto col-10 col-md-11"></div>';
 	//OSCAR view section
 	if (oscar_doms[i]["data-view"].length != 0) {
-		str_html_inner = str_html_inner + '<div id="search_header" class="search-header row gy-3 justify-content-end">';
+		str_html_inner = str_html_inner + '<div id="search_header" class="search-header row mx-auto col-10 col-md-11">';
 		for (var j = 0; j < data_view.length; j++) {
-			str_html_inner = str_html_inner + '<div id='+data_view[j]+' class="col-12 col-md-4 row"></div>';
+			str_html_inner = str_html_inner + '<div id='+data_view[j]+' class="col-12 col-md-6 row"></div>';
 		}
 		str_html_inner = str_html_inner + '</div>';
 	}
@@ -2475,7 +2475,7 @@ var htmldom = (function () {
 			}
 
 			var str_html =
-			"<div class='rows-per-page mb-3 col-6 d-flex align-items-center'><span class='me-2' style='white-space: nowrap;'>Rows per page:</span>"+
+			"<div class='rows-per-page mb-3 col d-flex align-items-center'><span class='me-2' style='white-space: nowrap;'>Rows per page:</span>"+
             "<select class='form-select' onchange='search.update_page_limit(this.options[selectedIndex].text)' id='sel1'>"+
 				options_html+"</select></span></div>";
 
@@ -2490,7 +2490,7 @@ var htmldom = (function () {
 		if (rowsxpage_container != null) {
 			const newDiv = document.createElement('div');
 			newDiv.innerHTML = '<span id="tot_val" class="text-primary fw-bold">'+String(tot_r)+'</span><span style="margin-left:10px">resources found</span>';
-			newDiv.className = 'tot-results mb-3 col-6 d-flex align-items-center';
+			newDiv.className = 'tot-results mb-3 col d-flex align-items-center';
 			rowsxpage_container.appendChild(newDiv);
 			return newDiv;
 		}else {
@@ -2549,7 +2549,7 @@ var htmldom = (function () {
 												</div>
 
                         <form class="input-group search-box" action="${search_base_path}" method="get">
-                            <input type="text" class="form-control theme-color" placeholder="Search DOI, PMID, or identifier... e.g., 10.1016/J.WEBSEM.2012.08.001" name="text">
+                            <input type="text" class="form-control theme-color" placeholder="Search DOI, PMID, or OMID ... e.g., 10.1016/J.WEBSEM.2012.08.001" name="text">
 
 														<!-- Dropdown menu -->
 												    <select class="form-select" name="rule" style="max-width: 150px;">
