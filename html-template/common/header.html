@@ -3,15 +3,16 @@ $def with (sp_title, current_subdomain)
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
       <!-- Brand logo -->
-      <a class="navbar-brand" href="/">
+      <a class="navbar-brand" href="https://opencitations.net">
         <img
           src="/static/img/opencitations-new-logo-small.png"
-          height="50"
+          height="80"
+          width="auto"
           alt="Logo"
           class="d-inline-block align-top"
         />
       </a>
-      
+     
       <!-- Mobile hamburger menu -->
       <button
         class="navbar-toggler"
@@ -24,7 +25,7 @@ $def with (sp_title, current_subdomain)
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      
+     
       <!-- Main navigation menu -->
       <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
         <ul class="navbar-nav">
@@ -35,18 +36,33 @@ $def with (sp_title, current_subdomain)
               Search
             </a>
           </li>
-          
+         
           <!-- SPARQL dropdown menu -->
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle fw-semibold px-3 ${'active' if current_subdomain == 'sparql' else ''}"
-               href="https://sparql.opencitations.net"
-               id="sparqlDropdown"
+            <!-- Mobile version: single dropdown toggle -->
+            <a class="nav-link dropdown-toggle fw-semibold px-3 d-lg-none ${'active' if current_subdomain == 'sparql' else ''}"
+               href="#"
                role="button"
                data-bs-toggle="dropdown"
                aria-expanded="false">
               SPARQL
             </a>
-            <ul class="dropdown-menu" aria-labelledby="sparqlDropdown">
+            
+            <!-- Desktop version: clickable link + separate toggle -->
+            <div class="dropdown-desktop-wrapper d-none d-lg-flex">
+              <a class="nav-link nav-link-main fw-semibold px-3 ${'active' if current_subdomain == 'sparql' else ''}"
+                 href="https://sparql.opencitations.net">
+                SPARQL
+              </a>
+              <button class="btn btn-link nav-link dropdown-toggle dropdown-toggle-split"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false">
+                <span class="visually-hidden">Toggle Dropdown</span>
+              </button>
+            </div>
+            
+            <ul class="dropdown-menu">
               <li>
                 <a class="dropdown-item ${'active' if sp_title == 'meta' else ''}" href="https://sparql.opencitations.net/meta">
                   Meta
@@ -59,18 +75,33 @@ $def with (sp_title, current_subdomain)
               </li>
             </ul>
           </li>
-          
+         
           <!-- API dropdown menu -->
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle fw-semibold px-3 ${'active' if current_subdomain == 'api' else ''}"
-               href="https://api.opencitations.net"
-               id="apiDropdown"
+            <!-- Mobile version: single dropdown toggle -->
+            <a class="nav-link dropdown-toggle fw-semibold px-3 d-lg-none ${'active' if current_subdomain == 'api' else ''}"
+               href="#"
                role="button"
                data-bs-toggle="dropdown"
                aria-expanded="false">
               API
             </a>
-            <ul class="dropdown-menu" aria-labelledby="apiDropdown">
+            
+            <!-- Desktop version: clickable link + separate toggle -->
+            <div class="dropdown-desktop-wrapper d-none d-lg-flex">
+              <a class="nav-link nav-link-main fw-semibold px-3 ${'active' if current_subdomain == 'api' else ''}"
+                 href="https://api.opencitations.net">
+                API
+              </a>
+              <button class="btn btn-link nav-link dropdown-toggle dropdown-toggle-split"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false">
+                <span class="visually-hidden">Toggle Dropdown</span>
+              </button>
+            </div>
+            
+            <ul class="dropdown-menu">
               <li>
                 <a class="dropdown-item"
                    href="https://api.opencitations.net/meta">
@@ -85,7 +116,7 @@ $def with (sp_title, current_subdomain)
               </li>
             </ul>
           </li>
-          
+         
           <!-- Dataset Downloads link -->
           <li class="nav-item">
             <a class="nav-link fw-semibold px-3 ${'active' if current_subdomain == 'download' else ''}"
@@ -98,7 +129,6 @@ $def with (sp_title, current_subdomain)
     </div>
   </nav>
 </header>
-
 $if current_subdomain == 'sparql' and sp_title in ['meta', 'index']:
   <nav aria-label="breadcrumb" class="mt-3 ms-3">
     <ol class="breadcrumb">
