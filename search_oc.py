@@ -71,7 +71,8 @@ web_logger = WebLogger(env_config["base_url"], env_config["log_dir"], [
 render = web.template.render(c["html"], globals={
     'str': str,
     'isinstance': isinstance,
-    'render': lambda *args, **kwargs: render(*args, **kwargs)
+    'render': lambda *args, **kwargs: render(*args, **kwargs),
+    'web': web
 })
 
 # App Web.py
