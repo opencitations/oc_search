@@ -7,7 +7,7 @@ ENV BASE_URL="search.opencitations.net" \
     LOG_DIR="/mnt/log_dir/oc_search"  \
     SPARQL_ENDPOINT_INDEX="http://qlever-service.default.svc.cluster.local:7011" \
     SPARQL_ENDPOINT_META="http://virtuoso-service.default.svc.cluster.local:8890/sparql" \
-    SYNC_ENABLED="false"
+    SYNC_ENABLED="true"
 
 # Install system dependencies required for Python package compilation
 # We clean up apt cache after installation to reduce image size
