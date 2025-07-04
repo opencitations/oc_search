@@ -2549,7 +2549,7 @@ var htmldom = (function () {
 												</div>
 
                         <form class="input-group search-box" action="${search_base_path}" method="get">
-                            <input type="text" class="form-control theme-color" placeholder="Search DOI, PMID, or OMID ... e.g., 10.1016/J.WEBSEM.2012.08.001" name="text">
+                            <input type="text" class="form-control theme-color" placeholder="Search DOI, PMID ... e.g., 10.1016/J.WEBSEM.2012.08.001" name="text">
 
 														<!-- Dropdown menu -->
 												    <select class="form-select" name="rule" style="max-width: 150px;">
