@@ -64,19 +64,19 @@ $def with (sp_title, current_subdomain)
     </div>
   </nav>
 </header>
-$if current_subdomain == 'sparql' and sp_title in ['meta', 'index']:
+$if current_subdomain in ['sparql', 'sparql-stg'] and sp_title in ['meta', 'index']:
   <nav aria-label="breadcrumb" class="mt-3 ms-3">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="https://sparql.opencitations.net">SPARQL</a></li>
+      <li class="breadcrumb-item"><a href="https://${current_subdomain}.opencitations.net">SPARQL</a></li>
       <li class="breadcrumb-item active" aria-current="page">$sp_title.capitalize()</li>
     </ol>
   </nav>
 
-$if current_subdomain == 'search' and web.ctx.path.startswith('/search'):
+$if current_subdomain in ['search', 'search-stg'] and web.ctx.path.startswith('/search'):
   $ query_params = web.input(text="", rule="")
   <nav aria-label="breadcrumb" class="mt-3 ms-3">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="https://search.opencitations.net">Search</a></li>
+      <li class="breadcrumb-item"><a href="https://${current_subdomain}.opencitations.net">Search</a></li>
       <li class="breadcrumb-item active" aria-current="page">
         $if query_params.rule == "citeddoi" and query_params.text:
           Citing $query_params.text
