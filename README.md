@@ -50,12 +50,9 @@ The application can synchronize static files from a GitHub repository. This conf
 - `sync.files`: List of individual files to synchronize
 
 ## Running Options
+### Local Development
 
-The application supports the following command line arguments:
-
-- `--sync-static`: Synchronize static files at startup
-- `--port PORT`: Specify the port to run the application on (default: 8080)
-
+For local development and testing, the application uses the built-in web.py HTTP server:
 Examples:
 ```bash
 # Run with default settings
@@ -70,6 +67,26 @@ python3 search_oc.py --port 8085
 # Run with both options
 python3 search_oc.py --sync-static --port 8085
 ```
+The application supports the following command line arguments:
+
+- `--sync-static`: Synchronize static files at startup
+- `--port PORT`: Specify the port to run the application on (default: 8080)
+
+### Production Deployment (Docker)
+
+When running in Docker/Kubernetes, the application uses **Gunicorn** as the WSGI HTTP server for better performance and concurrency handling:
+
+- **Server**: Gunicorn with gevent workers
+- **Workers**: 2 concurrent worker processes
+- **Worker Type**: gevent (async) for handling thousands of simultaneous requests
+- **Timeout**: 1200 seconds (to handle long-running SPARQL queries)
+- **Connections per worker**: 800 simultaneous connections
+
+The Docker container automatically uses Gunicorn and is configured with static sync enabled by default.
+
+> **Note**: The application code automatically detects the execution environment. When run with `python3 search_oc.py`, it uses the built-in web.py server. When run with Gunicorn (as in Docker), it uses the WSGI interface.
+You can customize the Gunicorn server configuration by modifying the `gunicorn.conf.py` file.
+
 
 ### Dockerfile
 
@@ -84,17 +101,19 @@ ENV BASE_URL="search.opencitations.net" \
     SPARQL_ENDPOINT_META="http://virtuoso-service.default.svc.cluster.local:8890/sparql" \
     SYNC_ENABLED="true"
 
+
+# Ensure Python output is unbuffered
+ENV PYTHONUNBUFFERED=1
 # Install system dependencies
 RUN apt-get update && \
     apt-get install -y \
     git \
     python3-dev \
-    build-essential && \
-    apt-get clean
+    build-essential
 
 WORKDIR /app
 
-# Clone the repository
+# Clone the repository from GitHum repo
 RUN git clone --single-branch --branch main https://github.com/opencitations/oc_search .
 
 # Install Python dependencies
@@ -103,6 +122,6 @@ RUN pip install -r requirements.txt
 # Expose port
 EXPOSE 8080
 
-# Start the application
-CMD ["python3", "search_oc.py"]
+# Start the application with gunicorn for production
+CMD ["gunicorn", "-c", "gunicorn.conf.py", "search_oc:application"]
 ```
