@@ -47,6 +47,7 @@ active = {
 # URL Mapping
 urls = (
     "/", "Main",
+    "/static/(.*)", "Static",
     "/sparql/index", "SparqlIndex",  # Add specific endpoint routes
     "/sparql/meta", "SparqlMeta",
     '/search', 'Search',
@@ -78,6 +79,9 @@ render = web.template.render(c["html"], globals={
 # App Web.py
 app = web.application(urls, globals())
 
+# WSGI application for Gunicorn
+application = app.wsgifunc()
+
 def sync_static_files():
     """
     Function to synchronize static files using sync_static.py
@@ -102,6 +106,36 @@ class Favicon:
         )
         protocol = 'https' if is_https else 'http'
         raise web.seeother(f"{protocol}://{web.ctx.host}/static/favicon.ico")
+    
+class Static:
+    def GET(self, name):
+        """Serve static files"""
+        static_dir = "static"
+        file_path = os.path.join(static_dir, name)
+
+        if not os.path.exists(file_path):
+            raise web.notfound()
+
+        # Content types
+        ext = os.path.splitext(name)[1]
+        content_types = {
+            '.css': 'text/css',
+            '.js': 'application/javascript',
+            '.png': 'image/png',
+            '.jpg': 'image/jpeg',
+            '.jpeg': 'image/jpeg',
+            '.gif': 'image/gif',
+            '.svg': 'image/svg+xml',
+            '.ico': 'image/x-icon',
+            '.woff': 'font/woff',
+            '.woff2': 'font/woff2',
+            '.ttf': 'font/ttf',
+        }
+
+        web.header('Content-Type', content_types.get(ext, 'application/octet-stream'))
+
+        with open(file_path, 'rb') as f:
+            return f.read()
 
 class Header:
     def GET(self):
@@ -282,7 +316,7 @@ class Search:
             render=render
         )
 
-# Run the application
+# Run the application on localhost for development/testing
 if __name__ == "__main__":
     # Add startup log
     print("Starting SEARCH OpenCitations web application...")
