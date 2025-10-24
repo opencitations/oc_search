@@ -77,10 +77,10 @@ The application supports the following command line arguments:
 When running in Docker/Kubernetes, the application uses **Gunicorn** as the WSGI HTTP server for better performance and concurrency handling:
 
 - **Server**: Gunicorn with gevent workers
-- **Workers**: 2 concurrent worker processes
+- **Workers**: 4 concurrent worker processes
 - **Worker Type**: gevent (async) for handling thousands of simultaneous requests
 - **Timeout**: 1200 seconds (to handle long-running SPARQL queries)
-- **Connections per worker**: 800 simultaneous connections
+- **Connections per worker**: 300 simultaneous connections
 
 The Docker container automatically uses Gunicorn and is configured with static sync enabled by default.
 
