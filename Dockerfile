@@ -10,7 +10,7 @@ ENV BASE_URL="search.opencitations.net" \
     SYNC_ENABLED="true"
 
 
-    # Ensure Python output is unbuffered
+# Ensure Python output is unbuffered
 ENV PYTHONUNBUFFERED=1
 # Install system dependencies required for Python package compilation
 # We clean up apt cache after installation to reduce image size
@@ -28,7 +28,7 @@ WORKDIR /website
 COPY . .
 
 # Install Python dependencies from requirements.txt
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose the port that our service will listen on
 EXPOSE 8080
