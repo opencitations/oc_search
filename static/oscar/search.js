@@ -416,8 +416,8 @@ var search = (function () {
 
 		/*call the SPARQL end point through a GET*/
 		function _call_ts(rule_category, rules, rule_index, sparql_query, query_text=null, query_label=null, callbk_fun=null, attempt = 0) {
-			// Progressive timeout: 2s for first try, 10s for retry
-			const timeouts = [2000, 5000, 20000];
+			// Progressive timeout: 2s, 5s, 60s, 5min
+			const timeouts = [2000, 5000, 60000, 300000];
 			const currentTimeout = attempt < timeouts.length ? timeouts[attempt] : timeouts[timeouts.length - 1];
 
 			console.log(`Attempt ${attempt + 1} with timeout ${currentTimeout}ms`);
