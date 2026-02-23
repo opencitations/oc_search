@@ -878,7 +878,7 @@ var search = (function () {
 				}
 			}
 
-			table_conf.view.page_limit = 10;
+			table_conf.view.page_limit = 5;
 			if (search_conf_json.page_limit_def != undefined) {
 				table_conf.view.page_limit = search_conf_json.page_limit_def;
 			}
