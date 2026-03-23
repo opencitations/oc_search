@@ -522,3 +522,17 @@ td[field="ext_data.cited_ref.reference"]::before {
  }
 
 }
+
+@media only screen and (max-width: 420px) {
+
+  .res-val-link {
+  padding: 5px!important;
+  background-color: #f8f7f7;
+  color: black !important;
+  text-decoration: none;
+  border-radius: 6px;
+  border: solid 1px lightgray;
+  font-size: 1em!important;
+}
+
+}
