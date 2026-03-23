@@ -2199,6 +2199,8 @@ var util = (function () {
 
 var htmldom = (function () {
 
+	var search_container = document.getElementById("search");
+
 	var input_box_container = document.getElementsByClassName("form-control theme-color");
 	var results_container = document.getElementById("search_results");
 	var header_container = document.getElementById("search_header");
@@ -2620,7 +2622,7 @@ var htmldom = (function () {
                 </div>
             </div>
         </div>`;
-		header_container.innerHTML = str_html;
+		search_container.innerHTML = str_html;
 		return str_html;
 	}
 
