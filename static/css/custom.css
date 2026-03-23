@@ -247,8 +247,11 @@ footer {
 }
 
 /* expanded (only affects same container) */
-.truncate .toggle:checked ~ .limit-text {
-  max-height: unset;
+.more-content{
+  display: none;
+}
+.truncate .toggle:checked ~ .more-content {
+  display: block;
 }
 
 /* button text */

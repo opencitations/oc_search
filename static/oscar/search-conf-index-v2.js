@@ -467,10 +467,12 @@ var callbackfunctions = (function () {
                           entity_ref += "<p><strong>Publication date: </strong><i>"+res["pub_date"]+"</i></p>";
                         }
                       }
+                      let MAX_AUTHORS_SHOW = 5;
                       if ("author" in res) {
                         if (res["author"] != "") {
                             entity_ref_val += " ;; ";
                             str_authors = "";
+                            str_authors_more = "";
                             l_authors = res["author"].split(";");
                             for (var i = 0; i < l_authors.length; i++) {
                               var an_author = l_authors[i];
@@ -479,12 +481,18 @@ var callbackfunctions = (function () {
                                 entity_ref_val += an_author + "; ";
                                 an_author = "<a href='https://w3id.org/oc/meta/"+omid_matches[0].split("omid:")[1]+"'>" + an_author + "</a>";
                               }
-                              str_authors += an_author + "; ";
+                              if (i > MAX_AUTHORS_SHOW -1) {
+                                str_authors_more += an_author + "; ";
+                              }else {
+                                str_authors += an_author + "; ";
+                              }
                             }
 
+                            let showmore_content = "";
                             let showmore_lbl = "";
                             let maxheight = "";
-                            if (str_authors.length > 300) {
+                            if (str_authors_more != "") {
+                              showmore_content = `<span class="more-content">`+str_authors_more+`</span>`;
                               showmore_lbl = `<span class="more"></span>`;
                               maxheight = `maxheight`;
                             }
@@ -496,6 +504,7 @@ var callbackfunctions = (function () {
                                   <label>
                                     <input type="checkbox" class="toggle">
                                     <span class="limit-text `+maxheight+`"><i>`+str_authors+`</i></span>
+                                    `+showmore_content+`
                                     `+showmore_lbl+`
                                   </label>
                                 </div>
