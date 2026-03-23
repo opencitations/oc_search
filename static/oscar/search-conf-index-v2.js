@@ -492,7 +492,7 @@ var callbackfunctions = (function () {
                             let showmore_lbl = "";
                             let maxheight = "";
                             if (str_authors_more != "") {
-                              showmore_content = `<span class="more-content">`+str_authors_more+`</span>`;
+                              showmore_content = `<span class="more-content"><i>`+str_authors_more+`</i></span>`;
                               showmore_lbl = `<span class="more"></span>`;
                               maxheight = `maxheight`;
                             }
