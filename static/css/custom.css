@@ -369,6 +369,7 @@ td[field="ext_data.cited_ref.reference"]::before {
 }
 
 #search_header{
+  /*display: none !important;*/
   width: fit-content;
   margin-left: auto;
   margin-right: 8% !important;
@@ -495,7 +496,6 @@ td[field="ext_data.cited_ref.reference"]::before {
     font-size: 1em;
     writing-mode: unset; /* text flows top-to-bottom, right-to-left */
     width: unset;
-    border-right: unset !important;
   }
   .results-tab tr {
     border-bottom: none ;
@@ -503,4 +503,22 @@ td[field="ext_data.cited_ref.reference"]::before {
   }
   .tab-nav-btn.next{float:right; margin-top: 10px; margin-right: 10px;}
   .tab-nav-btn.prev{float:left; margin-top: 10px; margin-left: 10px;}
+
+  #search_header{
+    margin: auto !important;
+  }
+
+  #search_header #rows_per_page{
+    display: table-row !important;
+  }
+
+  #search_header .tot-results{
+    margin: 0 !important;
+    margin-top: 20px !important;
+  }
+
+  div.row {
+   margin-right: 0 !important;
+ }
+
 }

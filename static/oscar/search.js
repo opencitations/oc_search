@@ -3047,7 +3047,7 @@ var htmldom = (function () {
 				results_container.innerHTML = "";
 				// Wrap the table in a responsive container
 				var responsiveWrapper = document.createElement("div");
-				responsiveWrapper.className = "table-responsive";
+				responsiveWrapper.className = "";
 				responsiveWrapper.appendChild(new_arr_tab[0]);
 
 				// Add the table and footer to the results container
