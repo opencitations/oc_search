@@ -37,9 +37,9 @@ for (var i = 0; i < oscar_doms.length; i++) {
 	var str_html_inner = '<div id="search_extra" class="search-extra row mx-auto col-10 col-md-11"></div>';
 	//OSCAR view section
 	if (oscar_doms[i]["data-view"].length != 0) {
-		str_html_inner = str_html_inner + '<div id="search_header" class="search-header row mx-auto col-10 col-md-11">';
+		str_html_inner = str_html_inner + '<div id="search_header" class="search-header d-flex align-items-center gap-3 flex-wrap">';
 		for (var j = 0; j < data_view.length; j++) {
-			str_html_inner = str_html_inner + '<div id='+data_view[j]+' class="col-12 col-md-6 row"></div>';
+			str_html_inner = str_html_inner + '<div id='+data_view[j]+' class="d-flex align-items-center"></div>';
 		}
 		str_html_inner = str_html_inner + '</div>';
 	}
@@ -526,10 +526,10 @@ var search = (function () {
 			_build_header_sec();
 			_sort_results();
 			htmldom.update_res_table(table_conf,search_conf_json);
-			
+
 			// Load external data for initially visible results
 			_load_ext_data_for_visible_results();
-			
+
 			return {
 				"table_conf": JSON.parse(JSON.stringify(table_conf)),
 				"cat_conf": JSON.parse(JSON.stringify(cat_conf)),
@@ -716,7 +716,7 @@ var search = (function () {
 			var category_conf_obj = cat_conf;
 			var fields = category_conf_obj.fields;
 			var ext_data_fields = [];
-			
+
 			for (var i = 0; i < fields.length; i++) {
 				if (fields[i].value.startsWith("ext_data")) {
 					var all_parts = fields[i].value.split(".");
@@ -739,15 +739,15 @@ var search = (function () {
 			for (var i = i_from; i < i_to; i++) {
 				var result = results[i];
 				var result_key = result[table_conf.data_key].value;
-				
+
 				if (!table_conf.processed_ext_data.has(result_key)) {
 					table_conf.processed_ext_data.add(result_key);
-					
+
 					for (var j = 0; j < ext_data_fields.length; j++) {
 						var key_full_name = ext_data_fields[j]["full_name"];
 						var key_func_name = ext_data_fields[j]["func_name"];
 						var func_obj = category_conf_obj["ext_data"][key_func_name];
-						
+
 						if (func_obj != undefined) {
 							var async_val = true;
 							if (func_obj["async"] != undefined) {
@@ -2199,6 +2199,8 @@ var util = (function () {
 
 var htmldom = (function () {
 
+	var search_container = document.getElementById("search");
+
 	var input_box_container = document.getElementsByClassName("form-control theme-color");
 	var results_container = document.getElementById("search_results");
 	var header_container = document.getElementById("search_header");
@@ -2532,7 +2534,7 @@ var htmldom = (function () {
 			}
 
 			var str_html =
-			"<div class='rows-per-page mb-3 col d-flex align-items-center'><span class='me-2' style='white-space: nowrap;'>Rows per page:</span>"+
+			"<div class='rows-per-page col d-flex align-items-center'><span class='me-2' style='white-space: nowrap;'>Rows per page:</span>"+
             "<select class='form-select' onchange='search.update_page_limit(this.options[selectedIndex].text)' id='sel1'>"+
 				options_html+"</select></span></div>";
 
@@ -2547,7 +2549,7 @@ var htmldom = (function () {
 		if (rowsxpage_container != null) {
 			const newDiv = document.createElement('div');
 			newDiv.innerHTML = '<span id="tot_val" class="text-primary fw-bold">'+String(tot_r)+'</span><span style="margin-left:10px">resources found</span>';
-			newDiv.className = 'tot-results mb-3 col d-flex align-items-center';
+			newDiv.className = 'tot-results ms-4 col d-flex align-items-center';
 			rowsxpage_container.appendChild(newDiv);
 			return newDiv;
 		}else {
@@ -2620,7 +2622,7 @@ var htmldom = (function () {
                 </div>
             </div>
         </div>`;
-		header_container.innerHTML = str_html;
+		search_container.innerHTML = str_html;
 		return str_html;
 	}
 
@@ -3045,7 +3047,7 @@ var htmldom = (function () {
 				results_container.innerHTML = "";
 				// Wrap the table in a responsive container
 				var responsiveWrapper = document.createElement("div");
-				responsiveWrapper.className = "table-responsive";
+				responsiveWrapper.className = "";
 				responsiveWrapper.appendChild(new_arr_tab[0]);
 
 				// Add the table and footer to the results container

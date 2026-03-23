@@ -112,14 +112,20 @@ var search_conf = {
       "label": "Citation",
       "macro_query": [
         `
-            SELECT ?oci ?citing ?cited
+            SELECT ?oci ?oci_lbl ?citing ?cited
             WHERE  {
               [[RULE]]
+
+              BIND(
+                STRAFTER(STR(?oci),
+                  "https://w3id.org/oc/index/")
+                AS ?oci_lbl
+              )
             }
             `
       ],
       "fields": [
-        {"iskey": true, "value":"oci", "title": "Id","column_width":"15%", "type": "text", "link":{"field":"oci","oci":""}},
+        {"iskey": true, "value":"oci_lbl", "title": "Id","column_width":"15%", "type": "text", "link":{"field":"oci","oci":""}},
         {"value":"ext_data.citing_ref.reference", "title": "Citing entity", "column_width":"40%", "type": "text"},
         {"value":"ext_data.cited_ref.reference", "title": "Cited entity", "column_width":"40%", "type": "text"}
       ],
@@ -413,9 +419,30 @@ var callbackfunctions = (function () {
                       if ("title" in res) {
                         if (res["title"] != "") {
                           entity_ref_val += res["title"];
-                          entity_ref += "<p><i><strong><a href='"+link_id+"'>"+res["title"]+"</a></strong></i></p><br/>";
+                          entity_ref += "<p><i><strong><a href='"+link_id+"'>"+res["title"]+"</a></strong></i></p>";
                         }
                       }
+                      if ("id" in res) {
+                        if (res["id"] != "") {
+                          var supported_ids = {
+                            "doi": "https://www.doi.org/",
+                            "pmid": "https://pubmed.ncbi.nlm.nih.gov/",
+                          };
+                          var l_ids = res["id"].split(" ");
+                          var html_ids = [];
+                          for (var i = 0; i < l_ids.length; i++) {
+                            for (var s_id in supported_ids) {
+                              if (l_ids[i].startsWith(s_id)) {
+                                id_val = l_ids[i].replace(s_id+":","");
+                                //html_ids.push(s_id.toUpperCase()+": <a href='"+supported_ids[s_id]+id_val+"'>"+id_val+"</a>");
+                                html_ids.push(`<a class="btn btn-primary" href="`+supported_ids[s_id]+id_val+`" role="button">`+s_id.toUpperCase()+`: `+id_val+`</a>`);
+                              }
+                            }
+                          }
+                          entity_ref += "<p>"+html_ids.join("<br>")+"</p>";
+                        }
+                      }
+                      entity_ref += "<br>";
                       if ("venue" in res) {
                         if (res["venue"] != "") {
                           entity_ref_val += " ;; ";
@@ -440,10 +467,12 @@ var callbackfunctions = (function () {
                           entity_ref += "<p><strong>Publication date: </strong><i>"+res["pub_date"]+"</i></p>";
                         }
                       }
+                      let MAX_AUTHORS_SHOW = 5;
                       if ("author" in res) {
                         if (res["author"] != "") {
                             entity_ref_val += " ;; ";
                             str_authors = "";
+                            str_authors_more = "";
                             l_authors = res["author"].split(";");
                             for (var i = 0; i < l_authors.length; i++) {
                               var an_author = l_authors[i];
@@ -452,29 +481,37 @@ var callbackfunctions = (function () {
                                 entity_ref_val += an_author + "; ";
                                 an_author = "<a href='https://w3id.org/oc/meta/"+omid_matches[0].split("omid:")[1]+"'>" + an_author + "</a>";
                               }
-                              str_authors += an_author + "; ";
-                            }
-                            entity_ref += "<p><strong>Author(s): </strong><i>"+str_authors+"</i></p>";
-                        }
-                      }
-
-                      if ("id" in res) {
-                        if (res["id"] != "") {
-                          var supported_ids = {
-                            "doi": "https://www.doi.org/",
-                            "pmid": "https://pubmed.ncbi.nlm.nih.gov/",
-                          };
-                          var l_ids = res["id"].split(" ");
-                          var html_ids = [];
-                          for (var i = 0; i < l_ids.length; i++) {
-                            for (var s_id in supported_ids) {
-                              if (l_ids[i].startsWith(s_id)) {
-                                id_val = l_ids[i].replace(s_id+":","");
-                                html_ids.push(s_id.toUpperCase()+": <a href='"+supported_ids[s_id]+id_val+"'>"+id_val+"</a>");
+                              if (i > MAX_AUTHORS_SHOW -1) {
+                                str_authors_more += an_author + "; ";
+                              }else {
+                                str_authors += an_author + "; ";
                               }
                             }
-                          }
-                          entity_ref += "<br/><p>"+html_ids.join("<br>")+"</p>";
+
+                            let showmore_content = "";
+                            let showmore_lbl = "";
+                            let maxheight = "";
+                            if (str_authors_more != "") {
+                              showmore_content = `<span class="more-content"><i>`+str_authors_more+`</i></span>`;
+                              showmore_lbl = `<span class="more"></span>`;
+                              maxheight = `maxheight`;
+                            }
+
+                            entity_ref += `
+                            <div class="author-container">
+                              <strong>Author(s):</strong>
+                                <div class="truncate">
+                                  <label>
+                                    <input type="checkbox" class="toggle">
+                                    <span class="limit-text `+maxheight+`"><i>`+str_authors+`</i></span>
+                                    `+showmore_content+`
+                                    `+showmore_lbl+`
+                                  </label>
+                                </div>
+                            </div>
+                            `;
+
+                            //entity_ref += "<p class='truncate'><strong>Author(s): </strong><input type='checkbox' id='toggle'><span class='text'><i>"+str_authors+"</i></span><label for='lauthors' class='more'></label></p>";
                         }
                       }
 
