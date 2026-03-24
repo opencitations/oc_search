@@ -401,6 +401,25 @@ td[field="ext_data.cited_ref.reference"]::before {
   font-size: 1.3em;
 }
 
+.results-tab .vallbl {
+  font-size: 1.1em
+}
+
+a.idwidget{
+    background-color: #e5e5e5 !important;
+    color: black !important;
+    border-color: darkgray;
+    text-decoration-line: none !important;
+    transition: 0.5s;
+    margin: 5px;
+    padding: 3px;
+    border: solid 1px darkgray;
+    border-radius: 5px;
+}
+a.idwidget:hover{
+  background-color: white !important;
+}
+
 
 @media only screen and (max-width: 700px) {
 
