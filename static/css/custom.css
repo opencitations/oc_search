@@ -356,16 +356,18 @@ td[field="ext_data.cited_ref.reference"]::before {
 }
 
 .results-tab .btn.btn-primary {
-    background-color: lightgray !important;
-    color: black !important;
-    border-color: darkgray;
+    background-color: #e9e9e9 !important;
+    color: #4f4f4f !important;
+    border-color: #e2e2e2;
     text-decoration-line: none;
     transition: 0.5s;
-    margin: 3px;
+    margin: 0px;
 }
 
 .results-tab .btn.btn-primary:hover {
-    background-color: white !important;
+    color: black !important;
+    background-color: #f0f0f0 !important;
+    border-color: transparent;
 }
 
 #search_header{
@@ -406,18 +408,17 @@ td[field="ext_data.cited_ref.reference"]::before {
 }
 
 a.idwidget{
-    background-color: #e5e5e5 !important;
-    color: black !important;
-    border-color: darkgray;
-    text-decoration-line: none !important;
-    transition: 0.5s;
-    margin: 5px;
-    padding: 3px;
-    border: solid 1px darkgray;
-    border-radius: 5px;
+
+  text-decoration: underline;
+  text-decoration-color: #3b82f6 !important; /* A nice blue */
+  text-underline-offset: 4px !important;
+  text-decoration-thickness: 2px !important;
+  transition: all 0.3s ease;
 }
 a.idwidget:hover{
-  background-color: white !important;
+  color: unset !important;
+  text-decoration-color: #1d4ed8 !important; /* A nice blue */
+  text-underline-offset: 6px !important; /* A nice blue */
 }
 
 

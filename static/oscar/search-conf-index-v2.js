@@ -564,19 +564,21 @@ var callbackfunctions = (function () {
           if (config.isTitleLink) {
             titleHTML =
               `<span><i>` +
-              `<a class="vallbl" href="${config.url(value)}">${title}</a>` +
+              `<a class="vallbl" href="${config.url(value)}" target="_blank">${title}</a>` +
               `</i></span>`;
             return;
           }
 
           html.push(
-            `<span><a class="idwidget" href="${config.url(value)}">${config.label(value)}</a></span>`
+            `<span><a class="idwidget" href="${config.url(value)}" target="_blank">${config.label(value)}</a></span>`
           );
         });
 
-        html.unshift(titleHTML);
-
-        return html.join("\n");
+        //html.unshift(titleHTML);
+        if (html.length > 0) {
+          return titleHTML+" ["+ html.join(", ") + "]";
+        }
+        return titleHTML;
       }
     }
 
