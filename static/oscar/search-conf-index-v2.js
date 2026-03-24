@@ -489,10 +489,10 @@ var callbackfunctions = (function () {
                             html_authors_more = [];
                             l_authors = res["author"].split(";");
                             for (var i = 0; i < l_authors.length; i++) {
-                              if (i > MAX_AUTHORS_SHOW -1) {
-                                html_authors_more.push( __convert_ids_string(l_authors[i]) );
-                              }else {
+                              if (i <= MAX_AUTHORS_SHOW -1) {
                                 html_authors.push( __convert_ids_string(l_authors[i]) );
+                              }else {
+                                html_authors_more.push( __convert_ids_string(l_authors[i]) );
                               }
                             }
 
@@ -502,7 +502,6 @@ var callbackfunctions = (function () {
                             if (html_authors_more.length != 0) {
                               showmore_content = `<span class="more-content">`+html_authors_more.join("<br/>")+`</span>`;
                               showmore_lbl = `<span class="more"></span>`;
-                              maxheight = `maxheight`;
                             }
 
                             entity_ref += `
@@ -511,7 +510,7 @@ var callbackfunctions = (function () {
                                 <div class="truncate">
                                   <label>
                                     <input type="checkbox" class="toggle">
-                                    <span class="limit-text `+maxheight+`">`+html_authors.join("<br/>")+`</span>
+                                    <span class="limit-text">`+html_authors.join("<br/>")+`</span>
                                     `+showmore_content+`
                                     `+showmore_lbl+`
                                   </label>
