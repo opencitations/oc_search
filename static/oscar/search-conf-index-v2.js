@@ -397,13 +397,40 @@ var callbackfunctions = (function () {
       var str_id = conf_params[0];
       var link_id = str_id;
 
+      const ID_PREFIXES = {
+        issn: {
+          url: v => `https://urn.issn.org/urn:issn:${v}`,
+          label: v => `issn:${v}`
+        },
+        doi: {
+          url: v => `https://www.doi.org/${v}`,
+          label: v => `doi:${v}`
+        },
+        pmid: {
+          url: v => `https://pubmed.ncbi.nlm.nih.gov/${v}`,
+          label: v => `pmid:${v}`
+        },
+        openalex: {
+          url: v => `https://openalex.org/sources/${v}`,
+          label: v => `openalex:${v}`
+        },
+        orcid: {
+          url: v => `https://orcid.org/${v}`,
+          label: v => `orcid:${v}`
+        },
+        omid: {
+          url: v => `https://w3id.org/oc/meta/${v}`,
+          label: v => v,
+          isTitleLink: true
+        }
+      };
+
       if (str_id != undefined) {
         //var call_id = "doi:"+str_id;
         //if (/^\d{1,}$/.test(str_id)) {
         //  call_id = "pmid:"+str_id;
         //}
         var call_id = "omid:"+str_id.split("meta/")[1];
-        console.log(call_id);
         $.ajax({
               url: call_meta + call_id,
               type: 'GET',
@@ -435,7 +462,7 @@ var callbackfunctions = (function () {
                               if (l_ids[i].startsWith(s_id)) {
                                 id_val = l_ids[i].replace(s_id+":","");
                                 //html_ids.push(s_id.toUpperCase()+": <a href='"+supported_ids[s_id]+id_val+"'>"+id_val+"</a>");
-                                html_ids.push(`<a class="btn btn-primary" href="`+supported_ids[s_id]+id_val+`" role="button">`+s_id.toUpperCase()+`: `+id_val+`</a>`);
+                                html_ids.push(`<a class="btn btn-primary" href="`+supported_ids[s_id]+id_val+`" role="button" target="_blank">`+s_id.toUpperCase()+`: `+id_val+`</a>`);
                               }
                             }
                           }
@@ -446,18 +473,12 @@ var callbackfunctions = (function () {
                       if ("venue" in res) {
                         if (res["venue"] != "") {
                           entity_ref_val += " ;; ";
-                          str_venues = "";
+                          html_venues = [];
                           l_venues = res["venue"].split(";");
                           for (var i = 0; i < l_venues.length; i++) {
-                            var a_venue = l_venues[i];
-                            var omid_matches = a_venue.match(/omid:br\/\d{1,}/);
-                            if (omid_matches) {
-                              entity_ref_val += a_venue + " ; ";
-                              a_venue = "<a href='https://w3id.org/oc/meta/"+omid_matches[0].split("omid:")[1]+"'>" + a_venue + "</a>";
-                            }
-                            str_venues += a_venue + "; ";
+                            html_venues.push( __convert_ids_string(l_venues[i]) );
                           }
-                          entity_ref += "<p><strong>Venue: </strong><i>"+str_venues+"</i></p>";
+                          entity_ref += "<p><strong>Venue: </strong>"+html_venues.join("<br/>")+"</p>";
                         }
                       }
                       if ("pub_date" in res) {
@@ -471,30 +492,25 @@ var callbackfunctions = (function () {
                       if ("author" in res) {
                         if (res["author"] != "") {
                             entity_ref_val += " ;; ";
-                            str_authors = "";
-                            str_authors_more = "";
+                            html_authors = [];
+                            html_authors_more = [];
                             l_authors = res["author"].split(";");
                             for (var i = 0; i < l_authors.length; i++) {
-                              var an_author = l_authors[i];
-                              var omid_matches = an_author.match(/omid:ra\/\d{1,}/);
-                              if (omid_matches) {
-                                entity_ref_val += an_author + "; ";
-                                an_author = "<a href='https://w3id.org/oc/meta/"+omid_matches[0].split("omid:")[1]+"'>" + an_author + "</a>";
-                              }
-                              if (i > MAX_AUTHORS_SHOW -1) {
-                                str_authors_more += an_author + "; ";
+                              if (i <= MAX_AUTHORS_SHOW -1) {
+                                html_authors.push( __convert_ids_string(l_authors[i]) );
                               }else {
-                                str_authors += an_author + "; ";
+                                html_authors_more.push( __convert_ids_string(l_authors[i]) );
                               }
                             }
 
                             let showmore_content = "";
                             let showmore_lbl = "";
+                            let showless_lbl = "";
                             let maxheight = "";
-                            if (str_authors_more != "") {
-                              showmore_content = `<span class="more-content"><i>`+str_authors_more+`</i></span>`;
-                              showmore_lbl = `<span class="more"></span>`;
-                              maxheight = `maxheight`;
+                            if (html_authors_more.length != 0) {
+                              showmore_content = `<span class="more-content">`+html_authors_more.join("<br/>")+`</span>`;
+                              showmore_lbl = `<span class="more">... Show more (`+String(html_authors_more.length)+`)</span>`;
+                              showless_lbl = `<span class="less">Show less</span>`;
                             }
 
                             entity_ref += `
@@ -503,9 +519,10 @@ var callbackfunctions = (function () {
                                 <div class="truncate">
                                   <label>
                                     <input type="checkbox" class="toggle">
-                                    <span class="limit-text `+maxheight+`"><i>`+str_authors+`</i></span>
+                                    <span class="limit-text">`+html_authors.join("<br/>")+`</span>
                                     `+showmore_content+`
                                     `+showmore_lbl+`
+                                    `+showless_lbl+`
                                   </label>
                                 </div>
                             </div>
@@ -531,6 +548,47 @@ var callbackfunctions = (function () {
                   Reflect.apply(callbk_func,undefined,func_param);
               }
          });
+      }
+
+      function __convert_ids_string(input) {
+        input = input.trim().replace(/;$/, "");
+
+        const match = input.match(/^(.+?)\s*\[(.+)\]$/);
+        if (!match) return "";
+
+        const title = match[1].trim();
+
+        // extract identifiers safely
+        const identifiers = match[2].match(/\w+:[^\s]+/g) || [];
+
+        let html = [];
+        let titleHTML = `<span><i>${title}</i></span>`;
+
+        identifiers.forEach(entry => {
+          const [prefix, value] = entry.split(":");
+          const config = ID_PREFIXES[prefix];
+
+          if (!config) return; // ignore unknown ids
+
+          // OMID becomes title link
+          if (config.isTitleLink) {
+            titleHTML =
+              `<span><i>` +
+              `<a class="vallbl" href="${config.url(value)}" target="_blank">${title}</a>` +
+              `</i></span>`;
+            return;
+          }
+
+          html.push(
+            `<span><a class="idwidget" href="${config.url(value)}" target="_blank">${config.label(value)}</a></span>`
+          );
+        });
+
+        //html.unshift(titleHTML);
+        if (html.length > 0) {
+          return titleHTML+" ["+ html.join(", ") + "]";
+        }
+        return titleHTML;
       }
     }
 

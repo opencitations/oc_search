@@ -255,15 +255,25 @@ footer {
 }
 
 /* button text */
-.truncate .more::after {
-  content: "... Show more";
+.truncate .more {
+  /*content: "... Show more";*/
+  color: blue;
+  cursor: pointer;
+}
+
+.truncate .toggle ~ .less {
+ display: none;
   color: blue;
   cursor: pointer;
 }
 
 /* toggle label text */
-.truncate .toggle:checked ~ .more::after {
-  content: "Show less";
+.truncate .toggle:checked ~ .less {
+ display: block;
+}
+
+.truncate .toggle:checked ~ .more {
+ display: none;
 }
 
 .maxheight{
@@ -356,16 +366,18 @@ td[field="ext_data.cited_ref.reference"]::before {
 }
 
 .results-tab .btn.btn-primary {
-    background-color: lightgray !important;
-    color: black !important;
-    border-color: darkgray;
+    background-color: #e9e9e9 !important;
+    color: #4f4f4f !important;
+    border-color: #e2e2e2;
     text-decoration-line: none;
     transition: 0.5s;
-    margin: 3px;
+    margin: 0px;
 }
 
 .results-tab .btn.btn-primary:hover {
-    background-color: white !important;
+    color: black !important;
+    background-color: #f0f0f0 !important;
+    border-color: transparent;
 }
 
 #search_header{
@@ -399,6 +411,24 @@ td[field="ext_data.cited_ref.reference"]::before {
   border-radius: 6px;
   border: solid 1px lightgray;
   font-size: 1.3em;
+}
+
+.results-tab .vallbl {
+  font-size: 1.1em
+}
+
+a.idwidget{
+
+  text-decoration: underline;
+  text-decoration-color: #3b82f6 !important; /* A nice blue */
+  text-underline-offset: 4px !important;
+  text-decoration-thickness: 2px !important;
+  transition: all 0.3s ease;
+}
+a.idwidget:hover{
+  color: unset !important;
+  text-decoration-color: #1d4ed8 !important; /* A nice blue */
+  text-underline-offset: 6px !important; /* A nice blue */
 }
 
 
