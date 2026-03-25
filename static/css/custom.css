@@ -255,15 +255,25 @@ footer {
 }
 
 /* button text */
-.truncate .more::after {
-  content: "... Show more";
+.truncate .more {
+  /*content: "... Show more";*/
+  color: blue;
+  cursor: pointer;
+}
+
+.truncate .toggle ~ .less {
+ display: none;
   color: blue;
   cursor: pointer;
 }
 
 /* toggle label text */
-.truncate .toggle:checked ~ .more::after {
-  content: "Show less";
+.truncate .toggle:checked ~ .less {
+ display: block;
+}
+
+.truncate .toggle:checked ~ .more {
+ display: none;
 }
 
 .maxheight{

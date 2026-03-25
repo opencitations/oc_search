@@ -402,6 +402,14 @@ var callbackfunctions = (function () {
           url: v => `https://urn.issn.org/urn:issn:${v}`,
           label: v => `issn:${v}`
         },
+        doi: {
+          url: v => `https://www.doi.org/${v}`,
+          label: v => `doi:${v}`
+        },
+        pmid: {
+          url: v => `https://pubmed.ncbi.nlm.nih.gov/${v}`,
+          label: v => `pmid:${v}`
+        },
         openalex: {
           url: v => `https://openalex.org/sources/${v}`,
           label: v => `openalex:${v}`
@@ -423,7 +431,6 @@ var callbackfunctions = (function () {
         //  call_id = "pmid:"+str_id;
         //}
         var call_id = "omid:"+str_id.split("meta/")[1];
-        console.log(call_id);
         $.ajax({
               url: call_meta + call_id,
               type: 'GET',
@@ -455,7 +462,7 @@ var callbackfunctions = (function () {
                               if (l_ids[i].startsWith(s_id)) {
                                 id_val = l_ids[i].replace(s_id+":","");
                                 //html_ids.push(s_id.toUpperCase()+": <a href='"+supported_ids[s_id]+id_val+"'>"+id_val+"</a>");
-                                html_ids.push(`<a class="btn btn-primary" href="`+supported_ids[s_id]+id_val+`" role="button">`+s_id.toUpperCase()+`: `+id_val+`</a>`);
+                                html_ids.push(`<a class="btn btn-primary" href="`+supported_ids[s_id]+id_val+`" role="button" target="_blank">`+s_id.toUpperCase()+`: `+id_val+`</a>`);
                               }
                             }
                           }
@@ -498,10 +505,12 @@ var callbackfunctions = (function () {
 
                             let showmore_content = "";
                             let showmore_lbl = "";
+                            let showless_lbl = "";
                             let maxheight = "";
                             if (html_authors_more.length != 0) {
                               showmore_content = `<span class="more-content">`+html_authors_more.join("<br/>")+`</span>`;
-                              showmore_lbl = `<span class="more"></span>`;
+                              showmore_lbl = `<span class="more">... Show more (`+String(html_authors_more.length)+`)</span>`;
+                              showless_lbl = `<span class="less">Show less</span>`;
                             }
 
                             entity_ref += `
@@ -513,6 +522,7 @@ var callbackfunctions = (function () {
                                     <span class="limit-text">`+html_authors.join("<br/>")+`</span>
                                     `+showmore_content+`
                                     `+showmore_lbl+`
+                                    `+showless_lbl+`
                                   </label>
                                 </div>
                             </div>
