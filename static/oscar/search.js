@@ -2297,15 +2297,17 @@ var htmldom = (function () {
 					inner_value = util.cut_text(str_value,limit_length);
 				}
 
-				if(results_obj[cell_field].hasOwnProperty("uri")){
+				if (str_value === "" && cell_field.indexOf("ext_data") === 0) {
+					str_html = "<div class='ext-data-loading'><img src='/static/img/opencitations-new-logo-small.png' alt='Loading...' /></div>";
+				}else if(results_obj[cell_field].hasOwnProperty("uri")){
 					str_html = "<a class='res-val-link' href='"+String(results_obj[cell_field].uri)+"' target='_blank'>"+inner_value+"</a>";
 				}else {
 					str_html = inner_value;
 				}
-			}
+				}
 		}else{
 			str_html = "";
-		}
+			}
 		return {"str_html": str_html, "str_value": str_value};
 
 		function short_version(str, max_chars = null) {
