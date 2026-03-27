@@ -49,7 +49,6 @@ var search_conf = {
                 }UNION{
                   ?identifier literal:hasLiteralValue "[[VAR]]"^^<http://www.w3.org/2001/XMLSchema#string> .
                 }
-
                 ?citing datacite:hasIdentifier ?identifier .
                 SERVICE <${endpoint_index}/sparql> {
                       ?oci a cito:Citation .
@@ -410,6 +409,10 @@ var callbackfunctions = (function () {
           url: v => `https://pubmed.ncbi.nlm.nih.gov/${v}`,
           label: v => `pmid:${v}`
         },
+        arxiv: {
+          url: v => `https://arxiv.org/abs/${v}`,
+          label: v => `arxiv:${v}`
+        },
         openalex: {
           url: v => `https://openalex.org/sources/${v}`,
           label: v => `openalex:${v}`
@@ -420,7 +423,7 @@ var callbackfunctions = (function () {
         },
         omid: {
           url: v => `https://w3id.org/oc/meta/${v}`,
-          label: v => v,
+          label: v => `omid:${v}`,
           isTitleLink: true
         }
       };
@@ -451,22 +454,17 @@ var callbackfunctions = (function () {
                       }
                       if ("id" in res) {
                         if (res["id"] != "") {
-                          var supported_ids = {
-                            "doi": "https://www.doi.org/",
-                            "pmid": "https://pubmed.ncbi.nlm.nih.gov/",
-                          };
                           var l_ids = res["id"].split(" ");
                           var html_ids = [];
                           for (var i = 0; i < l_ids.length; i++) {
-                            for (var s_id in supported_ids) {
+                            for (var s_id in ID_PREFIXES) {
                               if (l_ids[i].startsWith(s_id)) {
                                 id_val = l_ids[i].replace(s_id+":","");
-                                //html_ids.push(s_id.toUpperCase()+": <a href='"+supported_ids[s_id]+id_val+"'>"+id_val+"</a>");
-                                html_ids.push(`<a class="btn btn-primary" href="`+supported_ids[s_id]+id_val+`" role="button" target="_blank">`+s_id.toUpperCase()+`: `+id_val+`</a>`);
+                                html_ids.push(`<a class="btn btn-primary" href="`+ID_PREFIXES[s_id]["url"](id_val)+`" role="button" target="_blank">`+ID_PREFIXES[s_id]["label"](id_val)+`</a>`);
                               }
                             }
                           }
-                          entity_ref += "<p>"+html_ids.join("<br>")+"</p>";
+                          entity_ref += "<p><span>"+html_ids.join("</span><span>")+"</span></p>";
                         }
                       }
                       entity_ref += "<br>";

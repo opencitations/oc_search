@@ -6,7 +6,7 @@ import subprocess
 workers = 4
 worker_class = "gevent"
 worker_connections = 300
-timeout = 1200
+timeout = 600
 bind = "0.0.0.0:8080"
 
 # Logging
