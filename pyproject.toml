@@ -1,6 +1,6 @@
 [project]
 name = "oc-search"
-version = "1.6.2"
+version = "1.7.0"
 description = "Search service for OpenCitations, allowing users to search and query OpenCitations datasets through a web interface."
 readme = "README.md"
 requires-python = ">=3.11"
