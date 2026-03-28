@@ -669,6 +669,7 @@ input[type=range]::-moz-range-track {
 /* Loading placeholder for ext_data cells */
 .results-tab td:has(.ext-data-loading) {
   position: relative;
+  min-height: 300px;
 }
 .ext-data-loading {
   position: absolute;
