@@ -373,6 +373,7 @@ td[field="ext_data.cited_ref.reference"]::before {
     text-decoration-line: none;
     transition: 0.5s;
     margin: 2px;
+    user-select: text;
 }
 
 .results-tab .btn.btn-primary:hover {
