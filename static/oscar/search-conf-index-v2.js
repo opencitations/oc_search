@@ -39,7 +39,7 @@ var search_conf = {
       "placeholder": "e.g. 10.1016/J.WEBSEM.2012.08.001 | 37844613 | br/0612058700",
       "advanced": true,
       "freetext": false,
-      "heuristics": [['lower_case']],
+      "heuristics": [['lower_case_and_trim']],
       "category": "citation",
       "regex":"(.+)",
       "query": [`
@@ -64,7 +64,7 @@ var search_conf = {
       "placeholder": "e.g. 10.1016/J.WEBSEM.2012.08.001 | 37844613 | br/0612058700",
       "advanced": true,
       "freetext": true,
-      "heuristics": [['lower_case']],
+      "heuristics": [['lower_case_and_trim']],
       "category": "citation",
       "regex":"(.+)",
       "query": [`
@@ -160,7 +160,7 @@ var search_conf = {
 
   }
 
-console.log(search_conf);
+//console.log(search_conf);
 
 
 var heuristics = (function () {
@@ -169,6 +169,9 @@ var heuristics = (function () {
       //you can define your own heuristic functions here
       function lower_case(str){
         return str.toLowerCase();
+      }
+      function lower_case_and_trim(str) {
+        return str.toLowerCase().trim();
       }
       function capitalize_1st_letter(str){
         return str.charAt(0).toUpperCase() + str.slice(1);
@@ -328,6 +331,7 @@ var heuristics = (function () {
       }
       return {
         lower_case: lower_case,
+        lower_case_and_trim: lower_case_and_trim,
         capitalize_1st_letter: capitalize_1st_letter,
         ci_label: ci_label,
         map_source: map_source,
