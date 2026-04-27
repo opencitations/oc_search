@@ -2598,32 +2598,68 @@ var htmldom = (function () {
 
 	/*creates the search main-entry (a big searching-box)*/
 	function main_entry(search_base_path){
+
 		var str_html = `
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="search-entry text-center">
         <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="search-entry text-center">
-											<div class="container">
-												<div class="text-center my-5 animate__animated animate__fadeIn">
-													<img src="../static/img/oc-medium.png" alt="Logo" class="img-fluid mb-4" style="max-height: 150px" />
-													<!--<h2>Search <span class='theme-color'>Open</span><span class='oc-blue'>Citations</span></h2>-->
-												</div>
+          <div class="text-center my-5 animate__animated animate__fadeIn">
+            <img src="../static/img/oc-medium.png" alt="Logo" class="img-fluid mb-4" style="max-height: 150px" />
+          </div>
 
-                        <form class="input-group search-box" action="${search_base_path}" method="get">
-                            <input type="text" class="form-control theme-color" placeholder="Search DOI, PMID ... e.g., 10.1016/J.WEBSEM.2012.08.001" name="text">
+          <form class="input-group search-box" action="${search_base_path}" method="get">
+            <input id="in_search" type="text" class="form-control theme-color" placeholder="Search DOI, PMID ... e.g., 10.1016/J.WEBSEM.2012.08.001" name="text">
 
-														<!-- Dropdown menu -->
-												    <select class="form-select" name="rule" style="max-width: 150px;">
-																<option value="citeddoi">Citations</option>
-																<option value="citingdoi">References</option>
-												    </select>
+						<select class="form-select" name="rule" style="max-width: 150px;">
+              <option value="citeddoi">Citations</option>
+              <option value="citingdoi">References</option>
+            </select>
 
-                            <button class="btn btn-outline-secondary theme-color" type="submit"><i class="fa fa-search"></i></button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>`;
+						<button class="btn btn-outline-secondary theme-color" type="submit"><i class="fa fa-search"></i></button>
+
+          </form>
+
+					<button
+						class="btn btn-light left mt-1"
+						type="button"
+						title="Insert random DOI"
+						onclick="(async () => {
+							const offset = Math.floor(Math.random() * 150000);
+							const query = 'SELECT ?doi { ' +
+								'?identifier <http://purl.org/spar/datacite/usesIdentifierScheme> <http://purl.org/spar/datacite/doi> ; ' +
+								'<http://www.essepuntato.it/2010/06/literalreification/hasLiteralValue> ?doi . ' +
+								'} LIMIT 1 OFFSET ' + offset;
+
+							const url = 'https://sparql.opencitations.net/meta?query=' + encodeURIComponent(query);
+
+							try {
+								const response = await fetch(url, {
+									method: 'GET',
+									headers: { 'Accept': 'application/sparql-results+json' }
+								});
+
+								if (!response.ok) throw new Error('SPARQL request failed');
+
+								const data = await response.json();
+								const bindings = data.results.bindings;
+
+								if (bindings.length > 0) {
+									document.getElementById('in_search').value = bindings[0].doi.value;
+								}
+							} catch (e) {
+								console.error(e);
+							}
+						})()"
+					>
+					<i class="fa fa-random"></i> Random DOI
+					</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`;
 		search_container.innerHTML = str_html;
 		return str_html;
 	}
