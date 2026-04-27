@@ -464,7 +464,37 @@ var callbackfunctions = (function () {
                             for (var s_id in ID_PREFIXES) {
                               if (l_ids[i].startsWith(s_id)) {
                                 id_val = l_ids[i].replace(s_id+":","");
-                                html_ids.push(`<a class="btn btn-primary" href="`+ID_PREFIXES[s_id]["url"](id_val)+`" role="button" target="_blank">`+ID_PREFIXES[s_id]["label"](id_val)+`</a>`);
+
+                                html_ids.push(`
+                                  <div class="btn-group" role="group" aria-label="Identifier actions">
+                                      <a class="btn btn-light"
+                                         href="`+ID_PREFIXES[s_id]['url'](id_val)+`"
+                                         role="button"
+                                         target="_blank">
+                                        `+ID_PREFIXES[s_id]['label'](id_val)+`
+                                      </a><button
+                                         class="btn btn-primary"
+                                         type="button"
+                                         title="Copy DOI"
+                                         onclick="
+                                           const text = this.previousElementSibling.textContent.trim();
+                                           if (navigator.clipboard && window.isSecureContext) {
+                                             navigator.clipboard.writeText(text);
+                                           } else {
+                                             const ta = document.createElement('textarea');
+                                             ta.value = text;
+                                             ta.style.position = 'absolute';
+                                             ta.style.left = '-999999px';
+                                             document.body.appendChild(ta);
+                                             ta.select();
+                                             document.execCommand('copy');
+                                             ta.remove();
+                                           }
+                                         ">
+                                        <i class="fa fa-copy"></i>
+                                      </button>
+                                    </div>
+                                  `)
                               }
                             }
                           }
