@@ -5,7 +5,7 @@
   "base_url": "search.opencitations.net",
   "sparql_endpoint": {
     "index": "http://qlever-service.default.svc.cluster.local:7011",
-    "meta": "http://virtuoso-service.default.svc.cluster.local:8890/sparql"
+    "meta": "http://meta-qlever-service.default.svc.cluster.local:7011"
   },
   "sync": {
     "folders": ["static/css", "static/js", "static/img","html-template/common"],
