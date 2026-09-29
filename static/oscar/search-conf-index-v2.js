@@ -1,4 +1,4 @@
-const endpoint_meta = window.endpointConfig?.meta || "http://virtuoso-service.default.svc.cluster.local:8890/sparql"
+//const endpoint_meta = window.endpointConfig?.meta || "http://meta-qlever-service.default.svc.cluster.local:7011" //qlever
 const endpoint_index = window.endpointConfig?.index || "http://qlever-service.default.svc.cluster.local:7011"
 
 
