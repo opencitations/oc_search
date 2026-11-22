@@ -1,6 +1,6 @@
 [project]
 name = "oc-search"
-version = "1.7.5"
+version = "1.7.6"
 description = "Search service for OpenCitations, allowing users to search and query OpenCitations datasets through a web interface."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -36,15 +36,16 @@ dependencies = [
     "pytz>=2026.1.post1",
     "rdflib>=7.6.0",
     "rdflib-jsonld>=0.6.2",
-    "requests>=2.32.5",
+    "requests>=2.33.0",
     "rope>=1.14.0",
+    "setuptools>=83.0.0",
     "six>=1.17.0",
     "snowballstemmer>=3.0.1",
     "sparqlwrapper>=2.0.0",
     "toml>=0.10.2",
     "typing-extensions>=4.15.0",
     "ujson>=5.13.0",
-    "urllib3>=2.6.3",
+    "urllib3>=2.7.0",
     "web-py>=0.76",
     "wrapt>=2.1.2",
     "yapf>=0.43.0",

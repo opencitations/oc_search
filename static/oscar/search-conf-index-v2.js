@@ -44,11 +44,7 @@ var search_conf = {
       "regex":"(.+)",
       "query": [`
             {
-                {
-                  ?identifier literal:hasLiteralValue "[[VAR]]" .
-                }UNION{
-                  ?identifier literal:hasLiteralValue "[[VAR]]"^^<http://www.w3.org/2001/XMLSchema#string> .
-                }
+                ?identifier literal:hasLiteralValue "[[VAR]]" .
                 ?citing datacite:hasIdentifier ?identifier .
                 SERVICE <${endpoint_index}/sparql> {
                       ?oci a cito:Citation .
@@ -69,12 +65,7 @@ var search_conf = {
       "regex":"(.+)",
       "query": [`
             {
-                {
-                  ?identifier literal:hasLiteralValue "[[VAR]]" .
-                }UNION{
-                  ?identifier literal:hasLiteralValue "[[VAR]]"^^<http://www.w3.org/2001/XMLSchema#string> .
-                }
-
+                ?identifier literal:hasLiteralValue "[[VAR]]" .
                 ?cited datacite:hasIdentifier ?identifier .
                 SERVICE <${endpoint_index}/sparql> {
                       ?oci a cito:Citation .
